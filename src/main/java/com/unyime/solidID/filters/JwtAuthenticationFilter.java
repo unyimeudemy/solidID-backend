@@ -1,6 +1,6 @@
 package com.unyime.solidID.filters;
 
-import com.unyime.solidID.services.impl.JwtServiceImpl;
+import com.unyime.solidID.services.JwtServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,7 +42,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String userEmail;
         final String authHeader = request.getHeader("Authorization");
 
-        if (authHeader == null || authHeader.startsWith("Bearer ")){
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")){
             filterChain.doFilter(request, response);
             return;
         }
@@ -50,7 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         jwt = authHeader.substring(7);
         userEmail = jwtServiceImpl.extractUsername(jwt);
 
-        if(userEmail != null && SecurityContextHolder.getContext().getAuthentication() != null){
+        if(userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null){
             UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
 
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(

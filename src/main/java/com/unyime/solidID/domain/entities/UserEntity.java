@@ -27,6 +27,7 @@ public class UserEntity implements UserDetails {
 
     private String password;
 
+    @Column(name = "email", unique = true)
     private String email;
 
     private String firstName;
@@ -37,9 +38,9 @@ public class UserEntity implements UserDetails {
 
     private Integer age;
 
-    private String Nationality;
+    private String nationality;
 
-    private String StateOfOrigin;
+    private String stateOfOrigin;
 
     private String image;
 
