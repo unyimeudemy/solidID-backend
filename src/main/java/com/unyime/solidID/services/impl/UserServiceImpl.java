@@ -4,15 +4,11 @@ import com.unyime.solidID.domain.AuthenticationResponse;
 import com.unyime.solidID.domain.entities.Role;
 import com.unyime.solidID.domain.entities.UserEntity;
 import com.unyime.solidID.repository.UserRepository;
-import com.unyime.solidID.services.JwtServiceImpl;
 import com.unyime.solidID.services.UserService;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -68,7 +64,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AuthenticationResponse signIn(UserEntity userEntity) {
-
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(

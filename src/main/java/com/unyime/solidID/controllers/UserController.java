@@ -29,14 +29,18 @@ public class UserController {
     public ResponseEntity<AuthenticationResponse> signup(@RequestBody UserDto userDto){
         UserEntity userEntity = usermapper.mapFrom(userDto);
         AuthenticationResponse signedUpUser = userService.signUp(userEntity);
-        return ResponseEntity.ok(signedUpUser);
+        if(signedUpUser.getToken().equals("Email already exist")){
+            return new ResponseEntity<>(signedUpUser, HttpStatus.CONFLICT);
+        }else {
+            return new ResponseEntity<>(signedUpUser, HttpStatus.CREATED);
+        }
     }
 
     @PostMapping(path = "/auth/signin")
     public ResponseEntity<AuthenticationResponse> signin(@RequestBody UserDto userDto){
         UserEntity userEntity = usermapper.mapFrom(userDto);
         AuthenticationResponse signedInUser = userService.signIn(userEntity);
-        return ResponseEntity.ok(signedInUser);
+        return  new ResponseEntity<>(signedInUser, HttpStatus.OK);
     }
 
     @GetMapping(path = "/profile")

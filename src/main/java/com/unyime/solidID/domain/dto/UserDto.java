@@ -25,9 +25,9 @@ public class UserDto {
 
     private Integer age;
 
-    private String Nationality;
+    private String nationality;
 
-    private String StateOfOrigin;
+    private String stateOfOrigin;
 
     private String image;
 

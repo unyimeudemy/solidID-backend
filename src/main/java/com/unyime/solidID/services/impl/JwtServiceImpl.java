@@ -1,10 +1,12 @@
-package com.unyime.solidID.services;
+package com.unyime.solidID.services.impl;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.transaction.Transactional;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -13,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-@Service
+@Component
 public class JwtServiceImpl {
 
     private static final String SECRET_KEY = "2ccb38cf74fa599dc0ab09433ff697514da5cd1587f9d7cd6da558d473096fa";

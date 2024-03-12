@@ -1,6 +1,6 @@
 package com.unyime.solidID.filters;
 
-import com.unyime.solidID.services.JwtServiceImpl;
+import com.unyime.solidID.services.impl.JwtServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
