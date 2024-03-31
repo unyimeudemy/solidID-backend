@@ -38,6 +38,13 @@ public class IdentityController {
     @PostMapping(path = "/verify")
     public ResponseEntity<UserDto> verify(@RequestBody VerificationDto verificationDto){
         Optional<UserEntity> userEntity = identityService.verify(verificationDto.getKey());
-        return new ResponseEntity<>(userMapper.mapTo(userEntity.get()), HttpStatus.FOUND);
+//        return new ResponseEntity<>(userMapper.mapTo(userEntity.get()), HttpStatus.FOUND);
+
+        if(userEntity.isPresent()){
+            UserDto currentUserDto = userMapper.mapTo(userEntity.get());
+            return ResponseEntity.ok(currentUserDto);
+        }else{
+            return ResponseEntity.notFound().build();
+        }
     }
 }

@@ -47,9 +47,16 @@ public class UserController {
     public ResponseEntity<UserDto> getProfile(Authentication authentication){
         String currentUserEmail = authentication.getName();
         Optional<UserEntity> currentUser = userService.getProfile(currentUserEmail);
-        return currentUser.map(userEntity -> {
-            UserDto currentUserDto = usermapper.mapTo(userEntity);
-            return new ResponseEntity<UserDto>(currentUserDto, HttpStatus.FOUND);
-        }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+//        return currentUser.map(userEntity -> {
+//            UserDto currentUserDto = usermapper.mapTo(userEntity);
+//            return new ResponseEntity<UserDto>(currentUserDto, HttpStatus.FOUND);
+//        }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+
+        if(currentUser.isPresent()){
+            UserDto currentUserDto = usermapper.mapTo(currentUser.get());
+            return ResponseEntity.ok(currentUserDto);
+        }else{
+            return ResponseEntity.notFound().build();
+        }
     }
 }

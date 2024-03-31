@@ -7,31 +7,28 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserDto {
+public class OrganizationDto {
+
+
     private Integer id;
+
+    private String email;
 
     @JsonIgnore
     private String password;
 
-    private String email;
+    private String organizationName;
 
-    private String firstName;
+    private String logo;
 
-    private String lastName;
+    private String repEmail;
 
-    private String otherName;
-
-    private Integer age;
-
-    private String nationality;
-
-    private String stateOfOrigin;
-
-    private String image;
+    private String repPassword;
 
     private Role role;
 }
