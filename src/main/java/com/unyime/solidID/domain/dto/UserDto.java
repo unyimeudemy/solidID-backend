@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class UserDto {
     private Integer id;
 
-    @JsonIgnore
+//    @JsonIgnore
     private String password;
 
     private String email;

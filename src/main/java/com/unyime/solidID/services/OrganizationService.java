@@ -11,4 +11,6 @@ import java.util.Optional;
 @Service
 public interface OrganizationService {
     AuthenticationResponse signUp(OrganizationEntity organizationEntity);
+
+    AuthenticationResponse signIn(OrganizationEntity organizationEntity);
 }

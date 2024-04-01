@@ -51,7 +51,7 @@ public class OrganizationEntity implements UserDetails {
         return email;
     }
 
-    @Override
+
     public String getPassword(){return password;}
 
     @Override

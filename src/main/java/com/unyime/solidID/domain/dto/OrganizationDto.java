@@ -19,7 +19,6 @@ public class OrganizationDto {
 
     private String email;
 
-    @JsonIgnore
     private String password;
 
     private String organizationName;

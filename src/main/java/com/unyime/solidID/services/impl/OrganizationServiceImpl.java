@@ -10,18 +10,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class OrganizationServiceImpl implements OrganizationService {
 
     private final OrganizationRepository organizationRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserController userController;
-
     private final JwtServiceImpl jwtServiceImpl;
 
     public OrganizationServiceImpl(
             OrganizationRepository organizationRepository,
-            PasswordEncoder passwordEncoder, UserController userController, JwtServiceImpl jwtServiceImpl) {
+            PasswordEncoder passwordEncoder,
+            UserController userController,
+            JwtServiceImpl jwtServiceImpl
+    ) {
         this.organizationRepository = organizationRepository;
         this.passwordEncoder = passwordEncoder;
         this.userController = userController;
@@ -32,27 +36,44 @@ public class OrganizationServiceImpl implements OrganizationService {
     public AuthenticationResponse signUp(OrganizationEntity organizationEntity) {
         String repEmail = organizationEntity.getRepEmail();
         String repPassword = organizationEntity.getRepPassword();
-        System.out.println("-----------------------> repPassword: " + organizationEntity.getRepPassword());
-        System.out.println("-----------------------> repEmail: " + organizationEntity.getRepEmail());
-        System.out.println("-----------------------> rawPassword: " + organizationEntity.getPassword());
-        System.out.println("-----------------------> email: " + organizationEntity.getEmail());
-
-
         AuthenticationResponse token = checkReferenceAccount(repEmail, repPassword);
-        if(!token.getToken().equals("Reference account can not be accessed")){
 
-            String encodedPassword = passwordEncoder.encode(organizationEntity.getPassword());
-            System.out.println("---------------> Encoded password: " + encodedPassword);
-            organizationEntity.setPassword(encodedPassword);
+        if(organizationRepository.findByEmail(organizationEntity.getEmail()).isPresent()){
+            return AuthenticationResponse.builder()
+                    .token("Email already exist")
+                    .build();
+        }
+
+        if(!token.getToken().equals("Reference account can not be accessed")){
+            String encodedUserPassword = passwordEncoder.encode(organizationEntity.getPassword());
+            String encodedRepPassword = passwordEncoder.encode(organizationEntity.getRepPassword());
+            organizationEntity.setPassword(encodedUserPassword);
+            organizationEntity.setRepPassword(encodedRepPassword);
             organizationRepository.save(organizationEntity);
             var jwtToken = jwtServiceImpl.generateToken(organizationEntity);
             return AuthenticationResponse.builder()
                     .token(jwtToken)
                     .build();
         }
-
         return token;
     }
+
+    @Override
+    public AuthenticationResponse signIn(OrganizationEntity organizationEntity) {
+        String email = organizationEntity.getEmail();
+        String rawPassword = organizationEntity.getPassword();
+        Optional<OrganizationEntity> currentUser = organizationRepository.findByEmail(email);
+        if(currentUser.isPresent() && passwordEncoder.matches(rawPassword, currentUser.get().getPassword())){
+            var jwtToken = jwtServiceImpl.generateToken(organizationEntity);
+            return AuthenticationResponse.builder()
+                    .token(jwtToken)
+                    .build();
+        }
+        return AuthenticationResponse.builder()
+                .token("Email or password not correct")
+                .build();
+    }
+
 
     private  AuthenticationResponse checkReferenceAccount(String repEmail, String repPassword){
         UserDto userDto = UserDto.builder()
@@ -70,6 +91,5 @@ public class OrganizationServiceImpl implements OrganizationService {
                     .build();
         }
     }
-
 
 }
