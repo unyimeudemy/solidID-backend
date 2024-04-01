@@ -1,8 +1,11 @@
 package com.unyime.solidID.services.impl;
 
 import com.unyime.solidID.domain.AuthenticationResponse;
+import com.unyime.solidID.domain.entities.OrganizationEntity;
 import com.unyime.solidID.domain.entities.Role;
 import com.unyime.solidID.domain.entities.UserEntity;
+import com.unyime.solidID.domain.entities.UserOrganizationEntity;
+import com.unyime.solidID.repository.UserOrganizationRepository;
 import com.unyime.solidID.repository.UserRepository;
 import com.unyime.solidID.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,6 +22,8 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
+    private final UserOrganizationRepository userOrganizationRepository;
+
     private final JwtServiceImpl jwtServiceimpl;
 
     private final PasswordEncoder passwordEncoder;
@@ -27,11 +32,12 @@ public class UserServiceImpl implements UserService {
 
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, JwtServiceImpl jwtServiceimpl, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, HttpServletRequest request) {
+    public UserServiceImpl(UserRepository userRepository, JwtServiceImpl jwtServiceimpl, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, HttpServletRequest request, UserOrganizationRepository userOrganizationRepository) {
         this.userRepository = userRepository;
         this.jwtServiceimpl = jwtServiceimpl;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
+        this.userOrganizationRepository = userOrganizationRepository;
     }
 
     @Override
@@ -86,5 +92,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<UserEntity> getProfile(String currentUserName) {
         return userRepository.findByEmail(currentUserName);
+    }
+
+    @Override
+    public Optional<UserOrganizationEntity> addOrganization(UserOrganizationEntity userOrganizationEntity) {
+        UserOrganizationEntity savedUserOrganizationEntity =
+                userOrganizationRepository.save(userOrganizationEntity);
+        return Optional.of(savedUserOrganizationEntity);
+    }
+
+    @Override
+    public Optional<UserOrganizationEntity> getOrganization(String orgEmail) {
+        return userOrganizationRepository.findByOrgEmail(orgEmail);
     }
 }

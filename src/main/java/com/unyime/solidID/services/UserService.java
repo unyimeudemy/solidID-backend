@@ -1,7 +1,9 @@
 package com.unyime.solidID.services;
 
 import com.unyime.solidID.domain.AuthenticationResponse;
+import com.unyime.solidID.domain.entities.OrganizationEntity;
 import com.unyime.solidID.domain.entities.UserEntity;
+import com.unyime.solidID.domain.entities.UserOrganizationEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -15,4 +17,8 @@ public interface UserService {
     AuthenticationResponse signIn(UserEntity userEntity);
 
     Optional<UserEntity> getProfile(String currentUserEmail);
+
+    Optional<UserOrganizationEntity> addOrganization(UserOrganizationEntity userOrganizationEntity);
+
+    Optional<UserOrganizationEntity> getOrganization(String orgEmail);
 }

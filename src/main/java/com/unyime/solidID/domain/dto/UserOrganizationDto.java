@@ -1,7 +1,6 @@
-package com.unyime.solidID.domain.entities;
+package com.unyime.solidID.domain.dto;
 
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,11 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity
-@Table(name = "userOrganization")public class UserOrganizationEntity {
+public class UserOrganizationDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userOrganization_id_seq")
     private Integer id;
 
     private String staffId;
@@ -25,5 +21,4 @@ import lombok.NoArgsConstructor;
     private String staffName;
 
     private String staffEmail;
-
 }
