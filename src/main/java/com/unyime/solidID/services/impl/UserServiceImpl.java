@@ -1,10 +1,8 @@
 package com.unyime.solidID.services.impl;
 
 import com.unyime.solidID.domain.AuthenticationResponse;
-import com.unyime.solidID.domain.entities.OrganizationEntity;
-import com.unyime.solidID.domain.entities.Role;
-import com.unyime.solidID.domain.entities.UserEntity;
-import com.unyime.solidID.domain.entities.UserOrganizationEntity;
+import com.unyime.solidID.domain.entities.*;
+import com.unyime.solidID.repository.IdentityUsageRecordRepository;
 import com.unyime.solidID.repository.UserOrganizationRepository;
 import com.unyime.solidID.repository.UserRepository;
 import com.unyime.solidID.services.UserService;
@@ -15,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,14 +29,20 @@ public class UserServiceImpl implements UserService {
 
     private final AuthenticationManager authenticationManager;
 
+    private final OrganizationServiceImpl organizationServiceImpl;
+
+    private final IdentityUsageRecordRepository identityUsageRecordRepository;
+
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, JwtServiceImpl jwtServiceimpl, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, HttpServletRequest request, UserOrganizationRepository userOrganizationRepository) {
+    public UserServiceImpl(UserRepository userRepository, JwtServiceImpl jwtServiceimpl, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, HttpServletRequest request, UserOrganizationRepository userOrganizationRepository, OrganizationServiceImpl organizationServiceImpl, IdentityUsageRecordRepository identityUsageRecordRepository) {
         this.userRepository = userRepository;
         this.jwtServiceimpl = jwtServiceimpl;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.userOrganizationRepository = userOrganizationRepository;
+        this.organizationServiceImpl = organizationServiceImpl;
+        this.identityUsageRecordRepository = identityUsageRecordRepository;
     }
 
     @Override
@@ -96,6 +101,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserOrganizationEntity> addOrganization(UserOrganizationEntity userOrganizationEntity) {
+
+        //--------VERIFIES IF COMPANY IS A REGISTERED COMPANY ON ORGANIZATION ENTITY
+        Optional<OrganizationEntity> org = organizationServiceImpl.getOrg(userOrganizationEntity.getOrgEmail());
+//        userOrganizationEntity.setOrgName(org.get().getOrganizationName());
+        System.out.println("💥💥💥💥 -------> " + org.toString());
         UserOrganizationEntity savedUserOrganizationEntity =
                 userOrganizationRepository.save(userOrganizationEntity);
         return Optional.of(savedUserOrganizationEntity);
@@ -103,6 +113,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserOrganizationEntity> getOrganization(String orgEmail) {
-        return userOrganizationRepository.findByOrgEmail(orgEmail);
+//     Optional<OrganizationEntity> org = organizationServiceImpl.getOrg(orgEmail);
+
+        System.out.println("💥💥💥 ---------------> userOrg repo" );
+
+       return userOrganizationRepository.findByOrgEmail(orgEmail);
+    }
+
+    @Override
+    public List<UserOrganizationEntity> getAllUserOrg(String userEmail) {
+        return userOrganizationRepository.findByStaffEmail(userEmail);
+    }
+
+    @Override
+    public List<IdentityUsageRecordEntity> getIdentityUsageRecord(String userEmail) {
+        return identityUsageRecordRepository.findByUserVerifiedEmail(userEmail);
     }
 }

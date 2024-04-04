@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,6 +35,11 @@ public class StaffMemberServiceImpl implements StaffMemberService {
     @Override
     public Optional<StaffMemberEntity> getMember(String staffEmail) {
         return staffMemberRepository.findByStaffEmail(staffEmail);
+    }
+
+    @Override
+    public List<StaffMemberEntity> getMembers() {
+        return staffMemberRepository.findAll();
     }
 
     private Boolean verifyToken(String reqHeader, String orgEmail){

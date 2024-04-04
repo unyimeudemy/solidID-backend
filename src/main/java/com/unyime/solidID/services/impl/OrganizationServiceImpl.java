@@ -4,8 +4,12 @@ import com.unyime.solidID.controllers.UserController;
 import com.unyime.solidID.domain.AuthenticationResponse;
 import com.unyime.solidID.domain.dto.UserDto;
 import com.unyime.solidID.domain.entities.OrganizationEntity;
+import com.unyime.solidID.domain.entities.UserEntity;
+import com.unyime.solidID.mappers.Mapper;
 import com.unyime.solidID.repository.OrganizationRepository;
 import com.unyime.solidID.services.OrganizationService;
+import com.unyime.solidID.services.UserService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,7 +27,8 @@ public class OrganizationServiceImpl implements OrganizationService {
     public OrganizationServiceImpl(
             OrganizationRepository organizationRepository,
             PasswordEncoder passwordEncoder,
-            UserController userController,
+            @Lazy UserController userController,
+            Mapper<UserEntity, UserDto> userMapper,
             JwtServiceImpl jwtServiceImpl
     ) {
         this.organizationRepository = organizationRepository;
@@ -74,6 +79,10 @@ public class OrganizationServiceImpl implements OrganizationService {
                 .build();
     }
 
+    @Override
+    public Optional<OrganizationEntity> getOrg(String orgEmail){
+        return organizationRepository.findByEmail(orgEmail);
+    }
 
     private  AuthenticationResponse checkReferenceAccount(String repEmail, String repPassword){
         UserDto userDto = UserDto.builder()

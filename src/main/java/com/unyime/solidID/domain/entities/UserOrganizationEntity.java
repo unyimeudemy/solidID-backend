@@ -12,7 +12,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "userOrganization")public class UserOrganizationEntity {
+@Table(name = "userOrganization")
+public class UserOrganizationEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userOrganization_id_seq")
@@ -22,8 +23,11 @@ import lombok.NoArgsConstructor;
 
     private String orgEmail;
 
+    private String orgName;
+
     private String staffName;
 
     private String staffEmail;
 
+    private String staffRole;
 }

@@ -1,4 +1,4 @@
-package com.unyime.solidID.domain.dto;
+package com.unyime.solidID.domain;
 
 
 import lombok.AllArgsConstructor;
@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class VerificationDto {
-    private String key;
+public class TokenGenerationReqBody {
+
+//    @Builder.Default
+    private String orgEmail;
 }

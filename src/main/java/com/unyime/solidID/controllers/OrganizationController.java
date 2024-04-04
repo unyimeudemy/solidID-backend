@@ -16,7 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/org")
@@ -69,5 +71,11 @@ public class OrganizationController {
             return new ResponseEntity<>(savedStaffDto, HttpStatus.CREATED);
         }
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    }
+
+    @GetMapping(path = "/all-members")
+    public List<StaffMemberDto> getMembers(){
+        List<StaffMemberEntity> staffMemberList = staffMemberService.getMembers();
+        return staffMemberList.stream().map(staffMemberMapper::mapTo).collect(Collectors.toList());
     }
 }

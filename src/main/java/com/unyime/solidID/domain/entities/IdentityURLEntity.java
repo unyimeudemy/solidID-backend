@@ -21,4 +21,6 @@ public class IdentityURLEntity {
     private String encodedEmail;
 
     private String key;
+
+    private String orgEmail;
 }

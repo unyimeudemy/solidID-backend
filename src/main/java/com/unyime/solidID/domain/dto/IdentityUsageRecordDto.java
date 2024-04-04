@@ -6,10 +6,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class VerificationDto {
-    private String key;
+public class IdentityUsageRecordDto {
+
+    private String currentUserEmail;
+
+    private String userVerifiedEmail;
+
+    private Date date;
 }

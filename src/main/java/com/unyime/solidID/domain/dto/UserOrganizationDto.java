@@ -18,7 +18,11 @@ public class UserOrganizationDto {
 
     private String orgEmail;
 
+    private String orgName;
+
     private String staffName;
 
     private String staffEmail;
+
+    private String staffRole;
 }

@@ -1,6 +1,8 @@
 package com.unyime.solidID.controllers;
 
 
+import com.unyime.solidID.domain.TokenGenerationReqBody;
+import com.unyime.solidID.domain.VerificationResponse;
 import com.unyime.solidID.domain.dto.UserDto;
 import com.unyime.solidID.domain.dto.VerificationDto;
 import com.unyime.solidID.domain.entities.UserEntity;
@@ -29,20 +31,27 @@ public class IdentityController {
 
 
     @GetMapping(path = "/generate")
-    public ResponseEntity<String> generateURL(Authentication authentication){
+    public ResponseEntity<String> generateURL(
+            Authentication authentication ,
+            @RequestBody TokenGenerationReqBody tokenGenerationReqBody
+            ){
+        String orgEmail = tokenGenerationReqBody.getOrgEmail();
         String currentUserEmail = authentication.getName();
-        String generatedURL = identityService.generate(currentUserEmail);
+        String generatedURL = identityService.generate(currentUserEmail, orgEmail);
         return new ResponseEntity<>(generatedURL, HttpStatus.OK);
     }
 
     @PostMapping(path = "/verify")
-    public ResponseEntity<UserDto> verify(@RequestBody VerificationDto verificationDto){
-        Optional<UserEntity> userEntity = identityService.verify(verificationDto.getKey());
+    public ResponseEntity<VerificationResponse> verify(
+            Authentication authentication ,
+            @RequestBody VerificationDto verificationDto
+    ){
+        String currentUserEmail = authentication.getName();
+        Optional<VerificationResponse> verifiedUser = identityService.verify(currentUserEmail, verificationDto.getKey());
 //        return new ResponseEntity<>(userMapper.mapTo(userEntity.get()), HttpStatus.FOUND);
 
-        if(userEntity.isPresent()){
-            UserDto currentUserDto = userMapper.mapTo(userEntity.get());
-            return ResponseEntity.ok(currentUserDto);
+        if(verifiedUser.isPresent()){
+            return ResponseEntity.ok(verifiedUser.get());
         }else{
             return ResponseEntity.notFound().build();
         }

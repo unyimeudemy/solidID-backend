@@ -13,4 +13,6 @@ public interface OrganizationService {
     AuthenticationResponse signUp(OrganizationEntity organizationEntity);
 
     AuthenticationResponse signIn(OrganizationEntity organizationEntity);
+
+    Optional<OrganizationEntity> getOrg(String email);
 }
