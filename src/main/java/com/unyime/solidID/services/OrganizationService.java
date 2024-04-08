@@ -15,4 +15,6 @@ public interface OrganizationService {
     AuthenticationResponse signIn(OrganizationEntity organizationEntity);
 
     Optional<OrganizationEntity> getOrg(String email);
+
+    Optional<OrganizationEntity> getOrgWithJwtToken(String accessToken);
 }

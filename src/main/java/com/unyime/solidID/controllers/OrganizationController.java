@@ -2,10 +2,13 @@ package com.unyime.solidID.controllers;
 
 
 import com.unyime.solidID.domain.AuthenticationResponse;
+import com.unyime.solidID.domain.OrgProfileReqBody;
 import com.unyime.solidID.domain.dto.OrganizationDto;
 import com.unyime.solidID.domain.dto.StaffMemberDto;
+import com.unyime.solidID.domain.dto.UserDto;
 import com.unyime.solidID.domain.entities.OrganizationEntity;
 import com.unyime.solidID.domain.entities.StaffMemberEntity;
+import com.unyime.solidID.domain.entities.UserEntity;
 import com.unyime.solidID.mappers.Mapper;
 import com.unyime.solidID.services.OrganizationService;
 import com.unyime.solidID.services.StaffMemberService;
@@ -14,6 +17,7 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,6 +45,7 @@ public class OrganizationController {
     @PostMapping("/auth/signup")
     public ResponseEntity<AuthenticationResponse> signUp(@RequestBody OrganizationDto organizationDto){
         OrganizationEntity organizationEntity = orgMapper.mapFrom(organizationDto);
+        System.out.println("-------------------> Entered controller" + organizationEntity.getRole());
 
         AuthenticationResponse signedUpOrg = organizationService.signUp(organizationEntity);
         if(signedUpOrg.getToken().equals("Email already exist")){
@@ -52,7 +57,6 @@ public class OrganizationController {
 
     @PostMapping("/auth/signin")
     public ResponseEntity<AuthenticationResponse> signin(@RequestBody OrganizationDto organizationDto){
-        System.out.println("-------------------> Entered controller");
         OrganizationEntity organizationEntity = orgMapper.mapFrom(organizationDto);
         AuthenticationResponse signedInOrg = organizationService.signIn(organizationEntity);
         return new ResponseEntity<>(signedInOrg, HttpStatus.OK);
@@ -77,5 +81,18 @@ public class OrganizationController {
     public List<StaffMemberDto> getMembers(){
         List<StaffMemberEntity> staffMemberList = staffMemberService.getMembers();
         return staffMemberList.stream().map(staffMemberMapper::mapTo).collect(Collectors.toList());
+    }
+
+    @PostMapping(path = "/profile")
+    public ResponseEntity<OrganizationDto> getProfile(
+            @RequestBody OrgProfileReqBody orgProfileReqBody
+    ){
+        Optional<OrganizationEntity> currentOrg = organizationService.getOrgWithJwtToken(orgProfileReqBody.getAccessToken());
+        if(currentOrg.isPresent()){
+            OrganizationDto currentUserDto = orgMapper.mapTo(currentOrg.get());
+            return ResponseEntity.ok(currentUserDto);
+        }else{
+            return ResponseEntity.notFound().build();
+        }
     }
 }

@@ -30,7 +30,7 @@ public class IdentityController {
     }
 
 
-    @GetMapping(path = "/generate")
+    @PostMapping("/generate")
     public ResponseEntity<String> generateURL(
             Authentication authentication ,
             @RequestBody TokenGenerationReqBody tokenGenerationReqBody

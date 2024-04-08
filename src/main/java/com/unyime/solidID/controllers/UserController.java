@@ -108,7 +108,6 @@ public class UserController {
         String userEmail = getUserEmail(request);
         List<IdentityUsageRecordEntity> record = userService.getIdentityUsageRecord(userEmail);
         return record.stream().map(identityUsageRecordMapper::mapTo).collect(Collectors.toList());
-
     }
 
     private String getUserEmail(HttpServletRequest request){
@@ -121,6 +120,5 @@ public class UserController {
         }
         return userEmail;
     }
-
 
 }

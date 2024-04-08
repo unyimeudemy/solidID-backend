@@ -84,6 +84,12 @@ public class OrganizationServiceImpl implements OrganizationService {
         return organizationRepository.findByEmail(orgEmail);
     }
 
+    @Override
+    public Optional<OrganizationEntity> getOrgWithJwtToken(String accessToken) {
+        String token = jwtServiceImpl.extractUsername(accessToken);
+        return getOrg(token);
+    }
+
     private  AuthenticationResponse checkReferenceAccount(String repEmail, String repPassword){
         UserDto userDto = UserDto.builder()
                 .email(repEmail)
