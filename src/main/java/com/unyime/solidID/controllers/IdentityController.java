@@ -3,6 +3,7 @@ package com.unyime.solidID.controllers;
 
 import com.unyime.solidID.domain.TokenGenerationReqBody;
 import com.unyime.solidID.domain.VerificationResponse;
+import com.unyime.solidID.domain.dto.ErrorResponseDto;
 import com.unyime.solidID.domain.dto.UserDto;
 import com.unyime.solidID.domain.dto.VerificationDto;
 import com.unyime.solidID.domain.entities.UserEntity;
@@ -21,12 +22,12 @@ public class IdentityController {
 
     private final IdentityService identityService;
 
-    private final Mapper<UserEntity, UserDto> userMapper;
+//    private final Mapper<UserEntity, UserDto> userMapper;
 
 
     public IdentityController(IdentityService identityService, Mapper<UserEntity, UserDto> userMapper) {
         this.identityService = identityService;
-        this.userMapper = userMapper;
+//        this.userMapper = userMapper;
     }
 
 
@@ -42,7 +43,7 @@ public class IdentityController {
     }
 
     @PostMapping(path = "/verify")
-    public ResponseEntity<VerificationResponse> verify(
+    public ResponseEntity<?> verify(
             Authentication authentication ,
             @RequestBody VerificationDto verificationDto
     ){
@@ -51,9 +52,12 @@ public class IdentityController {
 //        return new ResponseEntity<>(userMapper.mapTo(userEntity.get()), HttpStatus.FOUND);
 
         if(verifiedUser.isPresent()){
-            return ResponseEntity.ok(verifiedUser.get());
+            return new ResponseEntity<>(verifiedUser.get(), HttpStatus.OK);
         }else{
-            return ResponseEntity.notFound().build();
+            ErrorResponseDto error = ErrorResponseDto.builder()
+                    .errorMessage("Verification failed")
+                    .build();
+            return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
         }
     }
 }

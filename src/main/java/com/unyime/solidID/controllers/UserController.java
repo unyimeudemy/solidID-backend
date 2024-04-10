@@ -1,6 +1,7 @@
 package com.unyime.solidID.controllers;
 
 import com.unyime.solidID.domain.AuthenticationResponse;
+import com.unyime.solidID.domain.dto.ErrorResponseDto;
 import com.unyime.solidID.domain.dto.IdentityUsageRecordDto;
 import com.unyime.solidID.domain.dto.UserDto;
 import com.unyime.solidID.domain.dto.UserOrganizationDto;
@@ -44,11 +45,14 @@ public class UserController {
     }
 
     @PostMapping(path = "/auth/signup")
-    public ResponseEntity<AuthenticationResponse> signup(@RequestBody UserDto userDto){
+    public ResponseEntity<?> signup(@RequestBody UserDto userDto){
         UserEntity userEntity = usermapper.mapFrom(userDto);
         AuthenticationResponse signedUpUser = userService.signUp(userEntity);
         if(signedUpUser.getToken().equals("Email already exist")){
-            return new ResponseEntity<>(signedUpUser, HttpStatus.CONFLICT);
+            ErrorResponseDto error = ErrorResponseDto.builder()
+                    .errorMessage("Account already exist")
+                    .build();
+            return new ResponseEntity<>(error, HttpStatus.CONFLICT);
         }else {
             return new ResponseEntity<>(signedUpUser, HttpStatus.CREATED);
         }
@@ -62,38 +66,53 @@ public class UserController {
     }
 
     @GetMapping(path = "/profile")
-    public ResponseEntity<UserDto> getProfile(Authentication authentication){
+    public ResponseEntity<?> getProfile(Authentication authentication){
         String currentUserEmail = authentication.getName();
         Optional<UserEntity> currentUser = userService.getProfile(currentUserEmail);
         if(currentUser.isPresent()){
             UserDto currentUserDto = usermapper.mapTo(currentUser.get());
             return ResponseEntity.ok(currentUserDto);
         }else{
-            return ResponseEntity.notFound().build();
+            ErrorResponseDto error = ErrorResponseDto.builder()
+                    .errorMessage("User does not exist")
+                    .build();
+            return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
         }
     }
 
     @PostMapping(path = "/add-org")
-    public ResponseEntity<UserOrganizationDto> addOrganization(
+    public ResponseEntity<?> addOrganization(
             @RequestBody UserOrganizationDto userOrganizationDto
     ){
         UserOrganizationEntity organizationEntity = userOrganizationMapper
                 .mapFrom(userOrganizationDto);
+        String currentUserEmail = organizationEntity.getStaffEmail();
+        String orgEmail = organizationEntity.getOrgEmail();
 
-        // ---------VERIFIES IF USER HAS ALREADY REGISTERED ORGANIZATION ON USER ORGANIZATON ENTITY-----------
+        Boolean isRegistered = userService.checkIfOrgIsAlreadyRegisteredWithUser(currentUserEmail, orgEmail);
+        if(isRegistered){
+            ErrorResponseDto error = ErrorResponseDto.builder()
+                    .errorMessage("You are already registered with the organization")
+                    .build();
 
-//        Optional<UserOrganizationEntity> org = userService.getOrganization(organizationEntity.getOrgEmail());
-//        if(org.isPresent() && org.get().equals(organizationEntity)){
-//            return new ResponseEntity<>(HttpStatus.CONFLICT);
-//        }
-
+            return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+        }
         Optional<UserOrganizationEntity> savedUserOrganizationEntity =
                 userService.addOrganization(organizationEntity);
 
-        UserOrganizationDto savedUserOrg = userOrganizationMapper
-                .mapTo(savedUserOrganizationEntity.get());
+        if(savedUserOrganizationEntity.isEmpty()){
+            ErrorResponseDto error = ErrorResponseDto.builder()
+                    .errorMessage("Company is not registered")
+                    .HttpStatusCode(HttpStatus.NOT_FOUND)
+                    .build();
 
-        return new ResponseEntity<>(savedUserOrg, HttpStatus.OK);
+            return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+        }else{
+            UserOrganizationDto savedUserOrg = userOrganizationMapper
+                    .mapTo(savedUserOrganizationEntity.get());
+
+            return new ResponseEntity<>(savedUserOrg, HttpStatus.OK);
+        }
     }
 
     @GetMapping(path = "/users-orgs")

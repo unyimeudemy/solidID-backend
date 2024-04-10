@@ -17,4 +17,6 @@ public interface OrganizationService {
     Optional<OrganizationEntity> getOrg(String email);
 
     Optional<OrganizationEntity> getOrgWithJwtToken(String accessToken);
+
+//    Optional<OrganizationEntity> getOrgByUserEmail(String currrentUserEmail, String orgEmail);
 }

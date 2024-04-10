@@ -31,11 +31,15 @@ public class OrganizationController {
     private final Mapper<OrganizationEntity, OrganizationDto> orgMapper;
     private final Mapper<StaffMemberEntity, StaffMemberDto> staffMemberMapper;
     private final OrganizationService organizationService;
-
     private final StaffMemberService staffMemberService;
 
     @Autowired
-    public OrganizationController(Mapper<OrganizationEntity, OrganizationDto> orgMapper, Mapper<StaffMemberEntity, StaffMemberDto> staffMemberMapper, OrganizationService organizationService, StaffMemberService staffMemberService) {
+    public OrganizationController(
+            Mapper<OrganizationEntity, OrganizationDto> orgMapper,
+            Mapper<StaffMemberEntity, StaffMemberDto> staffMemberMapper,
+            OrganizationService organizationService,
+            StaffMemberService staffMemberService
+    ) {
         this.orgMapper = orgMapper;
         this.staffMemberMapper = staffMemberMapper;
         this.organizationService = organizationService;
@@ -45,8 +49,6 @@ public class OrganizationController {
     @PostMapping("/auth/signup")
     public ResponseEntity<AuthenticationResponse> signUp(@RequestBody OrganizationDto organizationDto){
         OrganizationEntity organizationEntity = orgMapper.mapFrom(organizationDto);
-        System.out.println("-------------------> Entered controller" + organizationEntity.getRole());
-
         AuthenticationResponse signedUpOrg = organizationService.signUp(organizationEntity);
         if(signedUpOrg.getToken().equals("Email already exist")){
             return new ResponseEntity<>(signedUpOrg, HttpStatus.CONFLICT);

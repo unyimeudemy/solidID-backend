@@ -1,5 +1,6 @@
 package com.unyime.solidID.repository;
 
+import com.unyime.solidID.domain.entities.OrganizationEntity;
 import com.unyime.solidID.domain.entities.StaffMemberEntity;
 import com.unyime.solidID.domain.entities.UserEntity;
 import com.unyime.solidID.domain.entities.UserOrganizationEntity;
@@ -17,4 +18,7 @@ public interface UserOrganizationRepository extends JpaRepository<UserOrganizati
 
     @Query(value = "SELECT u FROM UserOrganizationEntity u WHERE u.staffEmail = ?1 AND u.orgEmail = ?2")
     Optional<UserOrganizationEntity> findByUserEmailAndOrgEmail(String staffEmail, String orgEmail);
+
+//    @Query(value = "SELECT o FROM UserOrganizationEntity o WHERE o.staffEmail = ?1 AND o.orgEmail = ?2")
+//    Optional<UserOrganizationEntity> getOrgByUserEmail(String currentUserEmail, String orgEmail);
 }

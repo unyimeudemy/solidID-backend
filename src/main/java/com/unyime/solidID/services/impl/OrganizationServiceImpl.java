@@ -90,6 +90,11 @@ public class OrganizationServiceImpl implements OrganizationService {
         return getOrg(token);
     }
 
+//    @Override
+//    public Optional<OrganizationEntity> getOrgByUserEmail(String currentUserEmail, String orgEmail) {
+//        return organizationRepository.findByCurrentUserEmailAndOrgEmail(currentUserEmail, orgEmail);
+//    }
+
     private  AuthenticationResponse checkReferenceAccount(String repEmail, String repPassword){
         UserDto userDto = UserDto.builder()
                 .email(repEmail)

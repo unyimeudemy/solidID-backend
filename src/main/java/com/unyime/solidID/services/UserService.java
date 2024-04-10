@@ -2,7 +2,6 @@ package com.unyime.solidID.services;
 
 import com.unyime.solidID.domain.AuthenticationResponse;
 import com.unyime.solidID.domain.entities.IdentityUsageRecordEntity;
-import com.unyime.solidID.domain.entities.OrganizationEntity;
 import com.unyime.solidID.domain.entities.UserEntity;
 import com.unyime.solidID.domain.entities.UserOrganizationEntity;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,7 @@ public interface UserService {
 
     Optional<UserOrganizationEntity> addOrganization(UserOrganizationEntity userOrganizationEntity);
 
-    Optional<UserOrganizationEntity> getOrganization(String orgEmail);
+    Boolean checkIfOrgIsAlreadyRegisteredWithUser(String currentUserEmail, String orgEmail);
 
     List<UserOrganizationEntity> getAllUserOrg(String userEmail);
 

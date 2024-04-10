@@ -82,16 +82,19 @@ public class UserServiceImpl implements UserService {
                             userEntity.getPassword()
                     )
             );
+
+            var user = userRepository.findByEmail(userEntity.getEmail()).orElseThrow();
+            String jwtToken = jwtServiceimpl.generateToken(user);
+
+            return AuthenticationResponse.builder()
+                    .token(jwtToken)
+                    .build();
+
         }catch (Exception e){
-            System.out.println("exception 💥💥💥 --> " + e.getMessage());
+            return AuthenticationResponse.builder()
+                    .token("Email or password not correct")
+                    .build();
         }
-
-
-        var user = userRepository.findByEmail(userEntity.getEmail()).orElseThrow();
-        String jwtToken = jwtServiceimpl.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
     }
 
     @Override
@@ -101,23 +104,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserOrganizationEntity> addOrganization(UserOrganizationEntity userOrganizationEntity) {
-
-        //--------VERIFIES IF COMPANY IS A REGISTERED COMPANY ON ORGANIZATION ENTITY
         Optional<OrganizationEntity> org = organizationServiceImpl.getOrg(userOrganizationEntity.getOrgEmail());
-//        userOrganizationEntity.setOrgName(org.get().getOrganizationName());
-        System.out.println("💥💥💥💥 -------> " + org.toString());
+        if(org.isEmpty()){
+            return Optional.empty();
+        }
+
         UserOrganizationEntity savedUserOrganizationEntity =
                 userOrganizationRepository.save(userOrganizationEntity);
         return Optional.of(savedUserOrganizationEntity);
     }
 
     @Override
-    public Optional<UserOrganizationEntity> getOrganization(String orgEmail) {
-//     Optional<OrganizationEntity> org = organizationServiceImpl.getOrg(orgEmail);
+    public Boolean checkIfOrgIsAlreadyRegisteredWithUser(String currentUserEmail, String orgEmail) {
+        System.out.println("============================== in checkIfOrgIsAlreadyRegisteredWithUser ====================");
 
-        System.out.println("💥💥💥 ---------------> userOrg repo" );
+        Optional<UserOrganizationEntity> org = userOrganizationRepository.findByUserEmailAndOrgEmail(
+                currentUserEmail, orgEmail
+        );
 
-       return userOrganizationRepository.findByOrgEmail(orgEmail);
+        return org.isPresent();
     }
 
     @Override

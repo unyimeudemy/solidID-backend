@@ -1,6 +1,7 @@
 package com.unyime.solidID.services.impl;
 
 import com.unyime.solidID.domain.VerificationResponse;
+import com.unyime.solidID.domain.dto.ErrorResponseDto;
 import com.unyime.solidID.domain.entities.IdentityURLEntity;
 import com.unyime.solidID.domain.entities.IdentityUsageRecordEntity;
 import com.unyime.solidID.domain.entities.UserEntity;
@@ -11,6 +12,8 @@ import com.unyime.solidID.repository.UserOrganizationRepository;
 import com.unyime.solidID.repository.UserRepository;
 import com.unyime.solidID.services.IdentityService;
 import jakarta.transaction.Transactional;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -70,14 +73,14 @@ public class IdentityServiceImpl implements IdentityService {
                 Optional<UserOrganizationEntity> staffUser = userOrganizationRepository.
                         findByUserEmailAndOrgEmail(userEmail, orgEmail);
                 keepRecordOfIdentityVerification(currentUserEmail, userEmail);
-                 return Optional.of(
-                         VerificationResponse.builder()
-                                 .firstName(staffUser.get().getStaffName())
-                                 .staffRole(staffUser.get().getStaffRole())
-                                 .orgName(staffUser.get().getOrgName())
-                                 .staffId(staffUser.get().getStaffId())
-                                 .build()
-                 );
+                    return Optional.of(
+                            VerificationResponse.builder()
+                                    .firstName(staffUser.get().getStaffName())
+                                    .staffRole(staffUser.get().getStaffRole())
+                                    .orgName(staffUser.get().getOrgName())
+                                    .staffId(staffUser.get().getStaffId())
+                                    .build()
+                    );
             }else{
                 Optional<UserEntity> verifiedUser = userRepository.findByEmail(userEmail);
                 keepRecordOfIdentityVerification(currentUserEmail, verifiedUser.get().getEmail());
