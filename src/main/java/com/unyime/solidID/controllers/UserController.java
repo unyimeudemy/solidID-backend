@@ -36,7 +36,7 @@ public class UserController {
 
     private final JwtServiceImpl jwtServiceImpl;
 
-    public UserController(UserService userService, Mapper<UserOrganizationEntity, UserOrganizationDto> userOrganizationMapper, Mapper<UserEntity, UserDto> usermapper, Mapper<IdentityUsageRecordEntity, IdentityUsageRecordDto> identityUsageRecordMapper, JwtServiceImpl jwtServiceImpl) {
+    public UserController(UserService userService, Mapper<com.unyime.solidID.domain.entities.UserOrganizationEntity, UserOrganizationDto> userOrganizationMapper, Mapper<UserEntity, UserDto> usermapper, Mapper<IdentityUsageRecordEntity, IdentityUsageRecordDto> identityUsageRecordMapper, JwtServiceImpl jwtServiceImpl) {
         this.userService = userService;
         this.userOrganizationMapper = userOrganizationMapper;
         this.usermapper = usermapper;
@@ -84,11 +84,9 @@ public class UserController {
     public ResponseEntity<?> addOrganization(
             @RequestBody UserOrganizationDto userOrganizationDto
     ){
-        UserOrganizationEntity organizationEntity = userOrganizationMapper
-                .mapFrom(userOrganizationDto);
+        UserOrganizationEntity organizationEntity = userOrganizationMapper.mapFrom(userOrganizationDto);
         String currentUserEmail = organizationEntity.getStaffEmail();
         String orgEmail = organizationEntity.getOrgEmail();
-
         Boolean isRegistered = userService.checkIfOrgIsAlreadyRegisteredWithUser(currentUserEmail, orgEmail);
         if(isRegistered){
             ErrorResponseDto error = ErrorResponseDto.builder()
@@ -116,10 +114,15 @@ public class UserController {
     }
 
     @GetMapping(path = "/users-orgs")
-    public List<UserOrganizationDto> getAllUserOrgs(@NonNull HttpServletRequest request){
+    public ResponseEntity<?> getAllUserOrgs(@NonNull HttpServletRequest request){
         String userEmail = getUserEmail(request);
         List<UserOrganizationEntity> userOrgsList = userService.getAllUserOrg(userEmail);
-        return userOrgsList.stream().map(userOrganizationMapper::mapTo).collect(Collectors.toList());
+        if(userOrgsList.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        List<UserOrganizationDto> list = userOrgsList.stream().map(userOrganizationMapper::mapTo).toList();
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @GetMapping(path = "/history")

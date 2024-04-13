@@ -116,12 +116,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Boolean checkIfOrgIsAlreadyRegisteredWithUser(String currentUserEmail, String orgEmail) {
-        System.out.println("============================== in checkIfOrgIsAlreadyRegisteredWithUser ====================");
-
         Optional<UserOrganizationEntity> org = userOrganizationRepository.findByUserEmailAndOrgEmail(
                 currentUserEmail, orgEmail
         );
-
         return org.isPresent();
     }
 

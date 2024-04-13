@@ -28,7 +28,6 @@ public class OrganizationServiceImpl implements OrganizationService {
             OrganizationRepository organizationRepository,
             PasswordEncoder passwordEncoder,
             @Lazy UserController userController,
-            Mapper<UserEntity, UserDto> userMapper,
             JwtServiceImpl jwtServiceImpl
     ) {
         this.organizationRepository = organizationRepository;

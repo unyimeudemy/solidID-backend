@@ -17,23 +17,26 @@ import java.util.Optional;
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class UserEntityIntegrationIntegrationTest {
+public class UserEntityRepositoryIntegrationTest {
 
     private final UserRepository underTest;
 
     @Autowired
-    public UserEntityIntegrationIntegrationTest(UserRepository underTest) {
+    public UserEntityRepositoryIntegrationTest(UserRepository underTest) {
         this.underTest = underTest;
     }
 
+
     @Test
     public void testThatUserCanBeCreatedAndRecalled(){
-        UserEntity user = TestDataUtility.createTestUser();
+        UserEntity user = TestDataUtility.createTestUserEntity();
         underTest.save(user);
 
         Optional<UserEntity> savedUser = underTest.findByEmail(user.getEmail());
         assertThat(savedUser).isPresent();
         assertThat(savedUser.get()).isEqualTo(user);
     }
+
+
 
 }

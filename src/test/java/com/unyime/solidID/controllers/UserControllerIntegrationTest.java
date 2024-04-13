@@ -3,7 +3,12 @@ package com.unyime.solidID.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.unyime.solidID.TestDataUtility;
+import com.unyime.solidID.domain.dto.UserDto;
+import com.unyime.solidID.domain.dto.UserOrganizationDto;
+import com.unyime.solidID.domain.entities.OrganizationEntity;
 import com.unyime.solidID.domain.entities.UserEntity;
+import com.unyime.solidID.domain.entities.UserOrganizationEntity;
+import com.unyime.solidID.services.OrganizationService;
 import com.unyime.solidID.services.impl.JwtServiceImpl;
 import com.unyime.solidID.services.UserService;
 import org.junit.jupiter.api.Test;
@@ -12,11 +17,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Optional;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -30,36 +40,22 @@ public class UserControllerIntegrationTest {
 
     private final UserService userService;
 
-    private final JwtServiceImpl jwtServiceImpl;
+    private final OrganizationService organizationService;
 
 
 
     @Autowired
-    public UserControllerIntegrationTest(ObjectMapper objectMapper, MockMvc mockMvc, UserService userService, JwtServiceImpl jwtServiceImpl) {
+    public UserControllerIntegrationTest(ObjectMapper objectMapper, MockMvc mockMvc, UserService userService, JwtServiceImpl jwtServiceImpl, OrganizationService organizationService) {
         this.objectMapper = objectMapper;
         this.mockMvc = mockMvc;
         this.userService = userService;
-        this.jwtServiceImpl = jwtServiceImpl;
+        this.organizationService = organizationService;
     }
 
 
     @Test
-    public void testThatSignupSuccessfullyReturnsHttp201() throws Exception {
-        UserEntity testUserEntity = TestDataUtility.createTestUser();
-
-        String userJson = objectMapper.writeValueAsString(testUserEntity);
-        mockMvc.perform(
-                MockMvcRequestBuilders.post("/api/v1/user/auth/signup")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(userJson)
-        ).andExpect(
-                MockMvcResultMatchers.status().isCreated()
-        );
-    }
-
-    @Test
-    public void testThatSignInSuccessfullyReturnsToken() throws Exception {
-        UserEntity userEntity = TestDataUtility.createTestUser1();
+    public void testThatNewUserCanBeSavedAndJwtTokenReturnedWithHttpStatusCode201() throws Exception {
+        UserEntity userEntity = TestDataUtility.createTestUserEntity();
 
         String userJson = objectMapper.writeValueAsString(userEntity);
         mockMvc.perform(
@@ -74,32 +70,110 @@ public class UserControllerIntegrationTest {
     }
 
     @Test
-    public void testThatSignUpReturnsHttp409ConflictIfUserAlreadyExist() throws Exception {
-        UserEntity testUserEntity = TestDataUtility.createTestUser();
-        userService.signUp(testUserEntity);
-        String testUserJson = objectMapper.writeValueAsString(testUserEntity);
+    public void testThatNewUserIsSavedAfterRegistration() throws Exception{
+        UserEntity userEntity = TestDataUtility.createTestUserEntity();
+        String userEntityJson = objectMapper.writeValueAsString(userEntity);
+
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/user/auth/signup")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(testUserJson)
+                        .content(userEntityJson)
         ).andExpect(
-                MockMvcResultMatchers.status().isConflict()
+                MockMvcResultMatchers.status().isCreated()
+        );
+
+        Optional<UserEntity> savedUser = userService.getProfile(userEntity.getEmail());
+            assertThat(savedUser).isPresent();
+            assertThat(savedUser.get().getEmail()).isEqualTo(userEntity.getEmail());
+            assertThat(savedUser.get().getFirstName()).isEqualTo(userEntity.getFirstName());
+    }
+
+    @Test
+    public void testThatAlreadyExistingUserCanSignInAndJwtTokenIsReturnedWithHttp201() throws Exception{
+        UserEntity userEntity = TestDataUtility.createTestUserEntity();
+        userService.signUp(userEntity);
+
+        UserDto userDto = TestDataUtility.createTestUserDto();
+        String userDtoJson = objectMapper.writeValueAsString(userDto);
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/api/v1/user/auth/signin")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(userDtoJson)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.token").exists()
         );
     }
 
-//    @Test
-//    public void testThatGetProfileReturnsHttp200WithCurrentUser() throws Exception{
-//
-//        UserEntity testUserEntity = TestDataUtility.createTestUser();
-//        userService.signUp(testUserEntity);
-////        Optional<UserEntity> currentUserProfile = userService.getProfile( authentication);
-//
-//        mockMvc.perform(
-//                MockMvcRequestBuilders.get("/api/v1/user/profile")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//        ).andExpect(
-//                MockMvcResultMatchers.status().isFound()
-//        );
-//    }
+
+    @Test
+    @WithMockUser(username = "unyime@gmail.com", password = "123456", roles = "USER")
+    public void testThatUserProfileCanBeAccessWithHttp201() throws Exception{
+        UserEntity userEntity = TestDataUtility.createTestUserEntity();
+        userService.signUp(userEntity);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/api/v1/user/profile")
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.email").value(userEntity.getEmail())
+        );
+    }
+
+    @Test
+    @WithMockUser(username = "unyime@gmail.com", password = "123456", roles = "USER")
+    public void testThatUserCanAddOrgWithHttp201() throws Exception{
+        UserEntity userEntity = TestDataUtility.createTestUserEntity();
+        userService.signUp(userEntity);
+
+        OrganizationEntity organizationEntity = TestDataUtility.createTestOrgEntity();
+        organizationService.signUp(organizationEntity);
+
+        UserOrganizationEntity userOrganizationEntity = TestDataUtility.createTestUserOrgEntity();
+        String userOrgEntityJson = objectMapper.writeValueAsString(userOrganizationEntity);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/api/v1/user/add-org")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(userOrgEntityJson)
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.staffEmail").value(userOrganizationEntity.getStaffEmail())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.orgEmail").value(userOrganizationEntity.getOrgEmail())
+        );
+    }
+
+    @Test
+    @WithMockUser(username = "unyime@gmail.com", password = "123456", roles = "USER")
+    public void testThatUserCanGetAllOrganizationsHeBelongsTo() throws Exception{
+        UserEntity userEntity = TestDataUtility.createTestUserEntity();
+        userService.signUp(userEntity);
+
+        OrganizationEntity organizationEntity = TestDataUtility.createTestOrgEntity();
+        organizationService.signUp(organizationEntity);
+
+        UserOrganizationEntity userOrganizationEntity = TestDataUtility.createTestUserOrgEntity();
+        Optional<UserOrganizationEntity> userOrg = userService.addOrganization(userOrganizationEntity);
+        assertThat(userOrg).contains(userOrganizationEntity);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/api/v1/user/users-orgs")
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$").isArray()
+        );
+    }
 
 }
+
+
+
+
+//.andExpect(
+//        MockMvcResultMatchers.jsonPath("$").isArray()
+//        ).andExpect(
+//        MockMvcResultMatchers.jsonPath("$.[1].orgEmail").value(userOrganizationEntity.getOrgEmail())
+//        ).andExpect(
+//        MockMvcResultMatchers.jsonPath("$.[1].staffEmail").value(userOrganizationEntity.getStaffEmail())
+//        )
