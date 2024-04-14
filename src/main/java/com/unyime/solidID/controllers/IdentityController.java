@@ -38,8 +38,8 @@ public class IdentityController {
             ){
         String orgEmail = tokenGenerationReqBody.getOrgEmail();
         String currentUserEmail = authentication.getName();
-        String generatedURL = identityService.generate(currentUserEmail, orgEmail);
-        return new ResponseEntity<>(generatedURL, HttpStatus.OK);
+        String verificationToken = identityService.generate(currentUserEmail, orgEmail);
+        return new ResponseEntity<>(verificationToken, HttpStatus.OK);
     }
 
     @PostMapping(path = "/verify")

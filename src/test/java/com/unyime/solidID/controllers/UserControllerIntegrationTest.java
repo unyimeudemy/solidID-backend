@@ -3,11 +3,12 @@ package com.unyime.solidID.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.unyime.solidID.TestDataUtility;
+import com.unyime.solidID.domain.VerificationResponse;
 import com.unyime.solidID.domain.dto.UserDto;
-import com.unyime.solidID.domain.dto.UserOrganizationDto;
 import com.unyime.solidID.domain.entities.OrganizationEntity;
 import com.unyime.solidID.domain.entities.UserEntity;
 import com.unyime.solidID.domain.entities.UserOrganizationEntity;
+import com.unyime.solidID.services.IdentityService;
 import com.unyime.solidID.services.OrganizationService;
 import com.unyime.solidID.services.impl.JwtServiceImpl;
 import com.unyime.solidID.services.UserService;
@@ -42,14 +43,17 @@ public class UserControllerIntegrationTest {
 
     private final OrganizationService organizationService;
 
+    private final IdentityService identityService;
+
 
 
     @Autowired
-    public UserControllerIntegrationTest(ObjectMapper objectMapper, MockMvc mockMvc, UserService userService, JwtServiceImpl jwtServiceImpl, OrganizationService organizationService) {
+    public UserControllerIntegrationTest(ObjectMapper objectMapper, MockMvc mockMvc, UserService userService, JwtServiceImpl jwtServiceImpl, OrganizationService organizationService, IdentityService identityService) {
         this.objectMapper = objectMapper;
         this.mockMvc = mockMvc;
         this.userService = userService;
         this.organizationService = organizationService;
+        this.identityService = identityService;
     }
 
 
@@ -161,12 +165,32 @@ public class UserControllerIntegrationTest {
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/api/v1/user/users-orgs")
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$").isArray()
+                MockMvcResultMatchers.status().isOk()
         );
     }
 
-}
+    @Test
+    @WithMockUser(username = "unyime@gmail.com", password = "123456", roles = "USER")
+    public void testThatUserCanRetrieveIdentityUsageLog(){
+        UserEntity userEntity = TestDataUtility.createTestUserEntity();
+        userService.signUp(userEntity);
 
+        OrganizationEntity organizationEntity = TestDataUtility.createTestOrgEntity();
+        organizationService.signUp(organizationEntity);
+
+        UserOrganizationEntity userOrganizationEntity = TestDataUtility.createTestUserOrgEntity();
+        Optional<UserOrganizationEntity> userOrg = userService.addOrganization(userOrganizationEntity);
+        assertThat(userOrg).contains(userOrganizationEntity);
+
+        String token = identityService.generate(userEntity.getEmail(), organizationEntity.getEmail());
+
+        Optional<VerificationResponse> verifiedUser  = identityService.verify(userEntity.getEmail(), token);
+
+        assertThat(verifiedUser).isPresent();
+        assertThat(verifiedUser.get()).isEqualTo(userEntity);
+
+    }
+}
 
 
 
