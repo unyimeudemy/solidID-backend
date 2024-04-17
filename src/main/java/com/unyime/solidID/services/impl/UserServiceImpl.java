@@ -48,6 +48,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public AuthenticationResponse signUp(UserEntity userEntity) {
         var user = UserEntity.builder()
+                .id(1)
                 .firstName(userEntity.getFirstName())
                 .lastName(userEntity.getLastName())
                 .otherName(userEntity.getOtherName())
