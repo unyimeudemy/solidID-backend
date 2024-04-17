@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserOrganizationRepository extends JpaRepository<UserOrganizationEntity, Integer> {
-    Optional<UserOrganizationEntity> findByOrgEmail(String orgEmail);
+//    Optional<UserOrganizationEntity> findByOrgEmail(String orgEmail);
 
     List<UserOrganizationEntity> findByStaffEmail(String staffEmail);
 

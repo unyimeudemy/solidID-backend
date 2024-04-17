@@ -24,6 +24,7 @@ public class SolidIdApplication {
 						.allowedOrigins("http://localhost:3000");
 			}
 		};
+
 	}
 
 }

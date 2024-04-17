@@ -2,10 +2,7 @@ package com.unyime.solidID;
 
 import com.unyime.solidID.domain.dto.UserDto;
 import com.unyime.solidID.domain.dto.UserOrganizationDto;
-import com.unyime.solidID.domain.entities.OrganizationEntity;
-import com.unyime.solidID.domain.entities.Role;
-import com.unyime.solidID.domain.entities.UserEntity;
-import com.unyime.solidID.domain.entities.UserOrganizationEntity;
+import com.unyime.solidID.domain.entities.*;
 
 public final class TestDataUtility {
 
@@ -65,5 +62,18 @@ public final class TestDataUtility {
                 .role(Role.ORG)
                 .build();
 
+    }
+
+    public static StaffMemberEntity createTestStaffMemberEntity() {
+        return StaffMemberEntity.builder()
+                .id(1)
+                .staffEmail("staffEmail@gmail.com")
+                .build();
+    }
+
+    public static IdentityUsageRecordEntity createIdentityUsageRecordEntity() {
+        return IdentityUsageRecordEntity.builder()
+                .userVerifiedEmail("unyime@gmail.com")
+                .build();
     }
 }

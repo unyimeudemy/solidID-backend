@@ -1,8 +1,9 @@
-package com.unyime.solidID.repository;
+package com.unyime.solidID.integrationTests.repository;
 
 
 import com.unyime.solidID.TestDataUtility;
 import com.unyime.solidID.domain.entities.UserEntity;
+import com.unyime.solidID.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
