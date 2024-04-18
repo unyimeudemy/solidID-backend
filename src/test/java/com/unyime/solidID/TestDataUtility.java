@@ -68,6 +68,7 @@ public final class TestDataUtility {
         return StaffMemberEntity.builder()
                 .id(1)
                 .staffEmail("staffEmail@gmail.com")
+                .orgEmail("orgEmail@gmail.com")
                 .build();
     }
 

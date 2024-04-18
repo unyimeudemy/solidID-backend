@@ -71,7 +71,9 @@ public class OrganizationController {
         if(staffMemberService.getMember(staffMemberEntity.getStaffEmail()).isPresent()){
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
-        Optional<StaffMemberEntity> savedStaffMemberEntity = staffMemberService.addMember(reqHeader, staffMemberEntity);
+        Optional<StaffMemberEntity> savedStaffMemberEntity =
+                staffMemberService.addMember(reqHeader, staffMemberEntity);
+
         if(savedStaffMemberEntity.isPresent()){
             StaffMemberDto savedStaffDto = staffMemberMapper.mapTo(savedStaffMemberEntity.get());
             return new ResponseEntity<>(savedStaffDto, HttpStatus.CREATED);
