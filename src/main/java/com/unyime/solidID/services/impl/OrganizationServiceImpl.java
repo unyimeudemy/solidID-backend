@@ -66,7 +66,8 @@ public class OrganizationServiceImpl implements OrganizationService {
     public AuthenticationResponse signIn(OrganizationEntity organizationEntity) {
         String email = organizationEntity.getEmail();
         String rawPassword = organizationEntity.getPassword();
-        Optional<OrganizationEntity> currentUser = organizationRepository.findByEmail(email);
+        Optional<OrganizationEntity> currentUser = organizationRepository
+                .findByEmail(email);
         if(currentUser.isPresent() && passwordEncoder.matches(rawPassword, currentUser.get().getPassword())){
             var jwtToken = jwtServiceImpl.generateToken(organizationEntity);
             return AuthenticationResponse.builder()
@@ -85,16 +86,12 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Override
     public Optional<OrganizationEntity> getOrgWithJwtToken(String accessToken) {
-        String token = jwtServiceImpl.extractUsername(accessToken);
-        return getOrg(token);
+        String orgEmail = jwtServiceImpl.extractUsername(accessToken);
+        return getOrg(orgEmail);
     }
 
-//    @Override
-//    public Optional<OrganizationEntity> getOrgByUserEmail(String currentUserEmail, String orgEmail) {
-//        return organizationRepository.findByCurrentUserEmailAndOrgEmail(currentUserEmail, orgEmail);
-//    }
 
-    private  AuthenticationResponse checkReferenceAccount(String repEmail, String repPassword) {
+    public   AuthenticationResponse checkReferenceAccount(String repEmail, String repPassword) {
         UserDto userDto = UserDto.builder()
                 .email(repEmail)
                 .password(repPassword)
@@ -109,15 +106,5 @@ public class OrganizationServiceImpl implements OrganizationService {
         return token.getBody();
     }
 
-    private static class NoBodyInTokenException extends Throwable {
-        private final String message;
-        public NoBodyInTokenException(String message){
-            this.message = message;
-        }
-
-        public String getMessage(){
-            return message;
-        }
-    }
 
 }

@@ -6,6 +6,7 @@ import com.unyime.solidID.controllers.UserController;
 import com.unyime.solidID.domain.AuthenticationResponse;
 import com.unyime.solidID.domain.dto.UserDto;
 import com.unyime.solidID.domain.entities.OrganizationEntity;
+import com.unyime.solidID.domain.entities.UserEntity;
 import com.unyime.solidID.repository.OrganizationRepository;
 import com.unyime.solidID.services.impl.JwtServiceImpl;
 import com.unyime.solidID.services.impl.OrganizationServiceImpl;
@@ -18,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.swing.text.html.Option;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
@@ -125,4 +127,136 @@ public class OrganizationServiceImplUnitTest {
 
         assertThat(result).isEqualTo(response);
     }
+
+    @Test
+    public void testThatOrgAccCanSignInAndGetToken(){
+        OrganizationEntity organizationEntity = TestDataUtility.createTestOrgEntity();
+        UserEntity userEntity = TestDataUtility.createTestUserEntity();
+        AuthenticationResponse response = AuthenticationResponse.builder()
+                        .token("JwtToken")
+                        .build();
+
+        when(organizationRepository.findByEmail(organizationEntity.getEmail()))
+                .thenReturn(Optional.of(organizationEntity));
+
+        when(passwordEncoder.matches(
+                        organizationEntity.getPassword(), userEntity.getPassword()
+                )
+        ).thenReturn(true);
+
+        when(jwtServiceImpl.generateToken(organizationEntity)).thenReturn("JwtToken");
+
+        AuthenticationResponse result = underTest.signIn(organizationEntity);
+        assertThat(result).isEqualTo(response);
+
+    }
+
+    @Test
+    public void testThatOrgAccCannotLogInIfEmailIsInvalid(){
+        OrganizationEntity organizationEntity = TestDataUtility.createTestOrgEntity();
+        AuthenticationResponse response = AuthenticationResponse.builder()
+                .token("Email or password not correct")
+                .build();
+
+        when(organizationRepository.findByEmail(organizationEntity.getEmail()))
+                .thenReturn(Optional.empty());
+
+        AuthenticationResponse result = underTest.signIn(organizationEntity);
+        assertThat(result).isEqualTo(response);
+    }
+
+    @Test
+    public void testThatOrgAccCannotLogInIfPasswordIsNotCorrect(){
+        OrganizationEntity organizationEntity = TestDataUtility.createTestOrgEntity();
+        UserEntity userEntity = TestDataUtility.createTestUserEntity();
+        AuthenticationResponse response = AuthenticationResponse.builder()
+                .token("Email or password not correct")
+                .build();
+
+        when(organizationRepository.findByEmail(organizationEntity.getEmail()))
+                .thenReturn(Optional.of(organizationEntity));
+
+        when(passwordEncoder.matches(
+                        organizationEntity.getPassword(), userEntity.getPassword()
+                )
+        ).thenReturn(false);
+
+        AuthenticationResponse result = underTest.signIn(organizationEntity);
+        assertThat(result).isEqualTo(response);
+
+    }
+
+    @Test
+    public void testThatCurrentUseCanGetOrgViaOrgEmail(){
+        OrganizationEntity organizationEntity = TestDataUtility.createTestOrgEntity();
+
+        when(organizationRepository.findByEmail(organizationEntity.getEmail()))
+                .thenReturn(Optional.of(organizationEntity));
+
+        Optional<OrganizationEntity> result = underTest.getOrg(organizationEntity.getEmail());
+        assertThat(result).isPresent();
+        assertThat(result.get()).isEqualTo(organizationEntity);
+    }
+
+    @Test
+    public void testThatOrgCanBeGottenViaCurrentUserToken(){
+        OrganizationEntity organizationEntity = TestDataUtility.createTestOrgEntity();
+        String accessToken = "Valid jwt token";
+        when(jwtServiceImpl.extractUsername(accessToken))
+                .thenReturn(organizationEntity.getEmail());
+
+        when(organizationRepository.findByEmail(organizationEntity.getEmail()))
+                .thenReturn(Optional.of(organizationEntity));
+
+        Optional<OrganizationEntity> result = underTest.getOrgWithJwtToken(accessToken);
+        assertThat(result).isPresent();
+        assertThat(result).isEqualTo(Optional.of(organizationEntity));
+    }
+
+    @Test
+    public void testThatRepAccIsValid(){
+        OrganizationEntity organizationEntity = TestDataUtility.createTestOrgEntity();
+        UserDto userDto = UserDto.builder()
+                .email(organizationEntity.getRepEmail())
+                .password(organizationEntity.getRepPassword())
+                .build();
+        AuthenticationResponse response = AuthenticationResponse.builder()
+                .token("Valid jwt Token")
+                .build();
+
+        when(userController.signin(userDto))
+                .thenReturn(new ResponseEntity<>(response, HttpStatus.OK));
+
+        AuthenticationResponse result = underTest
+                .checkReferenceAccount(
+                        organizationEntity.getRepEmail(),
+                        organizationEntity.getRepPassword()
+                );
+
+        assertThat(result).isEqualTo(response);
+    }
+
+    @Test
+    public void testThatRepAccIsInValid(){
+        OrganizationEntity organizationEntity = TestDataUtility.createTestOrgEntity();
+        UserDto userDto = UserDto.builder()
+                .email(organizationEntity.getRepEmail())
+                .password(organizationEntity.getRepPassword())
+                .build();
+        AuthenticationResponse response = AuthenticationResponse.builder()
+                .token("Reference account can not be accessed")
+                .build();
+
+        when(userController.signin(userDto))
+                .thenReturn(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+
+        AuthenticationResponse result = underTest
+                .checkReferenceAccount(
+                        organizationEntity.getRepEmail(),
+                        organizationEntity.getRepPassword()
+                );
+
+        assertThat(result).isEqualTo(response);
+    }
+
 }
