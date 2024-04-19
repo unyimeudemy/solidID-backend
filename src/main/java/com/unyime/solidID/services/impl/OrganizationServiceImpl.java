@@ -94,20 +94,29 @@ public class OrganizationServiceImpl implements OrganizationService {
 //        return organizationRepository.findByCurrentUserEmailAndOrgEmail(currentUserEmail, orgEmail);
 //    }
 
-    private  AuthenticationResponse checkReferenceAccount(String repEmail, String repPassword){
+    private  AuthenticationResponse checkReferenceAccount(String repEmail, String repPassword) {
         UserDto userDto = UserDto.builder()
                 .email(repEmail)
                 .password(repPassword)
                 .build();
 
-        try{
-            ResponseEntity<AuthenticationResponse> token = userController.signin(userDto);
-            return token.getBody();
-        }catch(Exception e){
-            System.out.println("💥💥💥 -> " + e.getMessage());
+        ResponseEntity<AuthenticationResponse> token = userController.signin(userDto);
+        if (!token.hasBody()) {
             return AuthenticationResponse.builder()
                     .token("Reference account can not be accessed")
                     .build();
+        }
+        return token.getBody();
+    }
+
+    private static class NoBodyInTokenException extends Throwable {
+        private final String message;
+        public NoBodyInTokenException(String message){
+            this.message = message;
+        }
+
+        public String getMessage(){
+            return message;
         }
     }
 
