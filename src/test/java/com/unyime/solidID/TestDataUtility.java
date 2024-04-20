@@ -77,4 +77,12 @@ public final class TestDataUtility {
                 .userVerifiedEmail("unyime@gmail.com")
                 .build();
     }
+
+    public static IdentityURLEntity createIdentityURLEntity(){
+        return IdentityURLEntity.builder()
+                .key(null)
+                .orgEmail("orgEmail@gmail.com")
+                .encodedEmail("unyime@gmail.com")
+                .build();
+    }
 }
