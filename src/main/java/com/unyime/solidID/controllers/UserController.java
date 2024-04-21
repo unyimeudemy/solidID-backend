@@ -84,9 +84,9 @@ public class UserController {
     public ResponseEntity<?> addOrganization(
             @RequestBody UserOrganizationDto userOrganizationDto
     ){
-        UserOrganizationEntity organizationEntity = userOrganizationMapper.mapFrom(userOrganizationDto);
-        String currentUserEmail = organizationEntity.getStaffEmail();
-        String orgEmail = organizationEntity.getOrgEmail();
+        UserOrganizationEntity userOrganizationEntity = userOrganizationMapper.mapFrom(userOrganizationDto);
+        String currentUserEmail = userOrganizationEntity.getStaffEmail();
+        String orgEmail = userOrganizationEntity.getOrgEmail();
         Boolean isRegistered = userService.checkIfOrgIsAlreadyRegisteredWithUser(currentUserEmail, orgEmail);
         if(isRegistered){
             ErrorResponseDto error = ErrorResponseDto.builder()
@@ -96,7 +96,7 @@ public class UserController {
             return new ResponseEntity<>(error, HttpStatus.CONFLICT);
         }
         Optional<UserOrganizationEntity> savedUserOrganizationEntity =
-                userService.addOrganization(organizationEntity);
+                userService.addOrganization(userOrganizationEntity);
 
         if(savedUserOrganizationEntity.isEmpty()){
             ErrorResponseDto error = ErrorResponseDto.builder()

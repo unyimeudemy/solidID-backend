@@ -85,4 +85,14 @@ public final class TestDataUtility {
                 .encodedEmail("unyime@gmail.com")
                 .build();
     }
+
+    public static UserOrganizationDto createTestUserOrgDto() {
+        return UserOrganizationDto.builder()
+                .orgName("org1")
+                .orgEmail("org1@gmail.com")
+                .staffName("unyime")
+                .staffEmail("unyime@gmail.com")
+                .staffRole("DSO")
+                .build();
+    }
 }
