@@ -84,7 +84,8 @@ public class UserController {
     public ResponseEntity<?> addOrganization(
             @RequestBody UserOrganizationDto userOrganizationDto
     ){
-        UserOrganizationEntity userOrganizationEntity = userOrganizationMapper.mapFrom(userOrganizationDto);
+        UserOrganizationEntity userOrganizationEntity = userOrganizationMapper
+                .mapFrom(userOrganizationDto);
         String currentUserEmail = userOrganizationEntity.getStaffEmail();
         String orgEmail = userOrganizationEntity.getOrgEmail();
         Boolean isRegistered = userService.checkIfOrgIsAlreadyRegisteredWithUser(currentUserEmail, orgEmail);
@@ -118,7 +119,7 @@ public class UserController {
         String userEmail = getUserEmail(request);
         List<UserOrganizationEntity> userOrgsList = userService.getAllUserOrg(userEmail);
         if(userOrgsList.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(List.of() ,HttpStatus.NOT_FOUND);
         }
 
         List<UserOrganizationDto> list = userOrgsList.stream().map(userOrganizationMapper::mapTo).toList();

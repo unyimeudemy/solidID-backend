@@ -27,7 +27,6 @@ public class UserEntityRepositoryIntegrationTest {
         this.underTest = underTest;
     }
 
-
     @Test
     public void testThatUserCanBeCreatedAndRecalled(){
         UserEntity user = TestDataUtility.createTestUserEntity();

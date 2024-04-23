@@ -1,5 +1,6 @@
 package com.unyime.solidID;
 
+import com.unyime.solidID.domain.dto.IdentityUsageRecordDto;
 import com.unyime.solidID.domain.dto.UserDto;
 import com.unyime.solidID.domain.dto.UserOrganizationDto;
 import com.unyime.solidID.domain.entities.*;
@@ -93,6 +94,12 @@ public final class TestDataUtility {
                 .staffName("unyime")
                 .staffEmail("unyime@gmail.com")
                 .staffRole("DSO")
+                .build();
+    }
+
+    public static IdentityUsageRecordDto createIdentityUsageRecordDto() {
+        return IdentityUsageRecordDto.builder()
+                .userVerifiedEmail("unyime@gmail.com")
                 .build();
     }
 }
