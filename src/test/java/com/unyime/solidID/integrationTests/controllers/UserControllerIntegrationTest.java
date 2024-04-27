@@ -149,54 +149,8 @@ public class UserControllerIntegrationTest {
         );
     }
 
-//    @Test
-//    @WithMockUser(username = "unyime@gmail.com", password = "123456", roles = "USER")
-//    public void testThatUserCanGetAllOrganizationsHeBelongsTo() throws Exception{
-//        UserEntity userEntity = TestDataUtility.createTestUserEntity();
-//        userService.signUp(userEntity);
-//
-//        OrganizationEntity organizationEntity = TestDataUtility.createTestOrgEntity();
-//        organizationService.signUp(organizationEntity);
-//
-//        UserOrganizationEntity userOrganizationEntity = TestDataUtility.createTestUserOrgEntity();
-//        Optional<UserOrganizationEntity> userOrg = userService.addOrganization(userOrganizationEntity);
-//        assertThat(userOrg).contains(userOrganizationEntity);
-//
-//        mockMvc.perform(
-//                MockMvcRequestBuilders.get("/api/v1/user/users-orgs")
-//        ).andExpect(
-//                MockMvcResultMatchers.status().isOk()
-//        );
-//    }
-
-//    @Test
-//    @WithMockUser(username = "unyime@gmail.com", password = "123456", roles = "USER")
-//    public void testThatUserCanRetrieveIdentityUsageLog(){
-//        UserEntity userEntity = TestDataUtility.createTestUserEntity();
-//        userService.signUp(userEntity);
-//
-//        OrganizationEntity organizationEntity = TestDataUtility.createTestOrgEntity();
-//        organizationService.signUp(organizationEntity);
-//
-//        UserOrganizationEntity userOrganizationEntity = TestDataUtility.createTestUserOrgEntity();
-//        Optional<UserOrganizationEntity> userOrg = userService.addOrganization(userOrganizationEntity);
-//        assertThat(userOrg).contains(userOrganizationEntity);
-//
-//        String token = identityService.generate(userEntity.getEmail(), organizationEntity.getEmail());
-//
-//        Optional<VerificationResponse> verifiedUser  = identityService.verify(userEntity.getEmail(), token);
-//
-//        assertThat(verifiedUser).isPresent();
-//        assertThat(verifiedUser.get()).isEqualTo(userEntity);
-//    }
 }
 
 
 
-//.andExpect(
-//        MockMvcResultMatchers.jsonPath("$").isArray()
-//        ).andExpect(
-//        MockMvcResultMatchers.jsonPath("$.[1].orgEmail").value(userOrganizationEntity.getOrgEmail())
-//        ).andExpect(
-//        MockMvcResultMatchers.jsonPath("$.[1].staffEmail").value(userOrganizationEntity.getStaffEmail())
-//        )
+

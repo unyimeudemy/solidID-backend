@@ -118,6 +118,8 @@ public class UserController {
     public ResponseEntity<?> getAllUserOrgs(@NonNull HttpServletRequest request){
         String userEmail = getUserEmail(request);
         List<UserOrganizationEntity> userOrgsList = userService.getAllUserOrg(userEmail);
+        System.out.println("=============================>  "+ userOrgsList );
+
         if(userOrgsList.isEmpty()){
             return new ResponseEntity<>(List.of() ,HttpStatus.NOT_FOUND);
         }

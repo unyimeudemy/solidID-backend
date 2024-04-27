@@ -106,13 +106,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<UserOrganizationEntity> addOrganization(UserOrganizationEntity userOrganizationEntity) {
         Optional<OrganizationEntity> org = organizationServiceImpl.getOrg(userOrganizationEntity.getOrgEmail());
+        System.out.println("============= find org  ==================>" + org.get());
         if(org.isEmpty()){
             return Optional.empty();
+        }else {
+            UserOrganizationEntity savedUserOrganizationEntity =
+                    userOrganizationRepository.save(userOrganizationEntity);
+            System.out.println("--------- savedUserOrg  ----------> " + savedUserOrganizationEntity);
+            return Optional.of(savedUserOrganizationEntity);
         }
-
-        UserOrganizationEntity savedUserOrganizationEntity =
-                userOrganizationRepository.save(userOrganizationEntity);
-        return Optional.of(savedUserOrganizationEntity);
     }
 
     @Override
