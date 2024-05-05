@@ -25,6 +25,7 @@ public class StaffMemberEntity {
 
     private String staffRole;
 
+    @Column(name = "staffId")
     private String staffID;
 
     private String orgName;

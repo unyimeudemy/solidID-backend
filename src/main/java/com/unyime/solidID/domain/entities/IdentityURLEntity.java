@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "identityURLs")
+@Table(name = "identityUrls")
 public class IdentityURLEntity {
 
     @Id
