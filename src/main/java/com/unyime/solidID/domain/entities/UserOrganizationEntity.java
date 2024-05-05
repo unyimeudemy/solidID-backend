@@ -17,6 +17,7 @@ public class UserOrganizationEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userOrganization_id_seq")
+    @SequenceGenerator(name = "userOrganization_id_seq", sequenceName = "userOrganization_id_seq", allocationSize = 1)
     private Integer id;
 
     private String staffId;

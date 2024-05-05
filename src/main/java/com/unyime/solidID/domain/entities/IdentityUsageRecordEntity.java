@@ -20,6 +20,7 @@ public class IdentityUsageRecordEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "identityUsageRecord_id_seq")
+    @SequenceGenerator(name = "identityUsageRecord_id_seq", sequenceName = "identityUsageRecord_id_seq", allocationSize = 1)
     private Integer id;
 
     private String currentUserEmail;

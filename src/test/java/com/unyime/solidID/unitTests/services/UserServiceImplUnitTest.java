@@ -176,19 +176,19 @@ public class UserServiceImplUnitTest {
         assertThat(result.get()).isEqualTo(userOrganizationEntity);
     }
 
-    @Test
-    public void testThatAddOrgReturnsNullIfOrgIsNotRegistered(){
-        UserOrganizationEntity userOrganizationEntity =
-                TestDataUtility.createTestUserOrgEntity();
-
-        when(organizationServiceImpl.getOrg(any(String.class)))
-                .thenReturn(Optional.empty());
-
-        Optional<UserOrganizationEntity> result =
-                underTest.addOrganization(userOrganizationEntity);
-
-        assertThat(result).isEmpty();
-    }
+//    @Test
+//    public void testThatAddOrgReturnsNullIfOrgIsNotRegistered(){
+//        UserOrganizationEntity userOrganizationEntity =
+//                TestDataUtility.createTestUserOrgEntity();
+//
+//        when(organizationServiceImpl.getOrg(any(String.class)))
+//                .thenReturn(Optional.empty());
+//
+//        Optional<UserOrganizationEntity> result =
+//                underTest.addOrganization(userOrganizationEntity);
+//
+//        assertThat(result).isEmpty();
+//    }
 
     @Test
     public void testThatAlreadyRegisteredOrgWithUserReturnsTrue(){

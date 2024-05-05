@@ -43,6 +43,7 @@ public final class TestDataUtility {
 
     public static UserOrganizationEntity createTestUserOrgEntity(){
         return UserOrganizationEntity.builder()
+                .id(1)
                 .orgName("org1")
                 .orgEmail("org1@gmail.com")
                 .staffName("unyime")

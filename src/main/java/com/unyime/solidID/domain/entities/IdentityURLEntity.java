@@ -16,6 +16,7 @@ public class IdentityURLEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "identity_id_seq")
+    @SequenceGenerator(name = "identity_id_seq", sequenceName = "identity_id_seq", allocationSize = 1)
     private Integer id;
 
     private String encodedEmail;

@@ -46,7 +46,9 @@ public class UserController {
 
     @PostMapping(path = "/auth/signup")
     public ResponseEntity<?> signup(@RequestBody UserDto userDto){
+        System.out.println("********************** no replacement ************************");
         UserEntity userEntity = usermapper.mapFrom(userDto);
+
         AuthenticationResponse signedUpUser = userService.signUp(userEntity);
         if(signedUpUser.getToken().equals("Email already exist")){
             ErrorResponseDto error = ErrorResponseDto.builder()
@@ -118,7 +120,6 @@ public class UserController {
     public ResponseEntity<?> getAllUserOrgs(@NonNull HttpServletRequest request){
         String userEmail = getUserEmail(request);
         List<UserOrganizationEntity> userOrgsList = userService.getAllUserOrg(userEmail);
-        System.out.println("=============================>  "+ userOrgsList );
 
         if(userOrgsList.isEmpty()){
             return new ResponseEntity<>(List.of() ,HttpStatus.NOT_FOUND);

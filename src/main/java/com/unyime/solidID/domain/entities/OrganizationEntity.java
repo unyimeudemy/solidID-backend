@@ -24,6 +24,8 @@ public class OrganizationEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "organization_id_seq")
+    @SequenceGenerator(name = "organization_id_seq", sequenceName = "organization_id_seq", allocationSize = 1)
+
     private Integer id;
 
     private String email;

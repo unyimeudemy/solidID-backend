@@ -23,6 +23,7 @@ public class UserEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_seq")
+    @SequenceGenerator(name = "user_id_seq", sequenceName = "user_id_seq", allocationSize = 1)
     private Integer id;
 
     private String password;
@@ -78,3 +79,6 @@ public class UserEntity implements UserDetails {
         return true;
     }
 }
+
+//4:50
+//5:02

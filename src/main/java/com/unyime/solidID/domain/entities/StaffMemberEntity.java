@@ -16,6 +16,7 @@ public class StaffMemberEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "staffMember_id_seq")
+    @SequenceGenerator(name = "staffMember_id_seq", sequenceName = "staffMember_id_seq", allocationSize = 1)
     private Integer id;
 
     private String staffName;

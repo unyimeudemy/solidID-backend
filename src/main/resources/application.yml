@@ -1,16 +1,33 @@
 
+#spring:
+#  datasource:
+#    url: "jdbc:postgresql://localhost:5432/solidID"
+#    username: postgres
+#    password: 211999
+#    driverClassName: org.postgresql.Driver
+#  jpa:
+#    properties:
+#      hibernate:
+#        dialect: org.hibernate.dialect.PostgreSQLDialect
+#    hibernate:
+#      ddl-auto: update
+#    show-sql: true
+
 spring:
   datasource:
-    url: "jdbc:postgresql://localhost:5432/solidID"
+    url: "jdbc:postgresql://postgres.chsswwcsu6lg.us-east-1.rds.amazonaws.com:5432/postgres"
     username: postgres
-    password: 211999
+    password: postgres
     driverClassName: org.postgresql.Driver
-  jpa:
-    properties:
+    jpa:
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.PostgreSQLDialect
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-      ddl-auto: update
-    show-sql: true
+        ddl-auto: none
+      show-sql: true
+
+
+#        dialect: org.hibernate.dialect.PostgresPlusDialect
 
 
