@@ -19,8 +19,6 @@ spring:
     username: postgres
     password: postgres
     driverClassName: org.postgresql.Driver
-    hikari:
-      max-lifetime: 1800000
     jpa:
       properties:
         hibernate:
@@ -28,16 +26,6 @@ spring:
       hibernate:
         ddl-auto: none
       show-sql: true
-
-server:
-  ssl:
-    key-store-type: PKCS12
-    key-store: classpath:keystore/baeldung.p12
-    key-store-password: 211999
-    key-alias: baeldung
-    enabled: true
-#    trust-store: classpath:keystore/baeldung.p12
-#    trust-store-password: 211999
 
 
 
