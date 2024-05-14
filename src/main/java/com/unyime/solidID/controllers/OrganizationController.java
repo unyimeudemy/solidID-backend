@@ -68,6 +68,7 @@ public class OrganizationController {
     public ResponseEntity<StaffMemberDto> addMember(@NonNull HttpServletRequest request, @RequestBody StaffMemberDto staffMemberDto){
         String reqHeader = request.getHeader("Authorization");
         StaffMemberEntity staffMemberEntity = staffMemberMapper.mapFrom(staffMemberDto);
+
         if(staffMemberService.getMember(staffMemberEntity.getStaffEmail()).isPresent()){
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }

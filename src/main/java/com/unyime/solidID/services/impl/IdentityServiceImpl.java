@@ -55,6 +55,7 @@ public class IdentityServiceImpl implements IdentityService {
                 .encodedEmail(currentUserEmail)
                 .key(keyStr)
                 .orgEmail(orgEmail)
+                .date(LocalDateTime.now())
                 .build();
 
         IdentityURLEntity savedUrl = identityRepository.save(identityURLEntity);
@@ -72,6 +73,7 @@ public class IdentityServiceImpl implements IdentityService {
             if(!identityURLEntity.get().getOrgEmail().equals("Profile")){
                 Optional<UserOrganizationEntity> staffUser = userOrganizationRepository.
                         findByUserEmailAndOrgEmail(userEmail, orgEmail);
+
                 keepRecordOfIdentityVerification(currentUserEmail, userEmail);
                     return Optional.of(
                             VerificationResponse.builder()
