@@ -46,7 +46,6 @@ public class UserController {
 
     @PostMapping(path = "/auth/signup")
     public ResponseEntity<?> signup(@RequestBody UserDto userDto){
-        System.out.println("********************** no replacement ************************");
         UserEntity userEntity = usermapper.mapFrom(userDto);
 
         AuthenticationResponse signedUpUser = userService.signUp(userEntity);
