@@ -6,8 +6,8 @@ that serves a single source for the identity of individual and organizations .
 
 ## MOTIVATION
 The motivation for this project came after checking some statistics on identity theft.
-Did you know that every 3 seconds there is a victim of identity theft in the United States?
-did you know that over $29 billion was stolen by identity thieves in 2022?
+Did you know that every **<span style="color: red;">3 seconds</span>**  there is a victim of identity theft in the United States?
+And did you know that over **<span style="color: red;">$29 billion</span>** was stolen by identity thieves in 2022?
 
 Actually, there are solutions out there but all of them seem to focus on rectification after
 the damage as already been done. This is because no one can totally stop people's data from getting
@@ -29,7 +29,7 @@ verification is kept.
     <img height="400px" src="https://solididbucket.s3.amazonaws.com/photos/Model+databases.png" alt="Jenkins logo"> 
 </a>
 
-This repository is the backend built with spring boot. You can check out the client repository in
+This repository is the backend, built with spring boot. You can check out the client repository in
 [SolidID-client](https://github.com/unyimeudemy/solidID-client) which is built with reactjs.
 
 Here communication with database is done via Java Persistence API (JPA). The relation database engine used here is postgres, and it is 
@@ -38,3 +38,4 @@ deployed in aws Relation Database Service (RSD) and images are stored in aws Sim
 - Click https://solidid-client.onrender.com/ to check out the live project which is deployed on render.com
 - All essential functionalities are unit tested and to run unit test use `./mvnw test`
 - To build project run `./mvnw verify clean`
+- The app is currently using the CI/CD service from render.com

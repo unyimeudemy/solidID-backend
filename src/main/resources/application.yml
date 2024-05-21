@@ -27,22 +27,34 @@
 #        ddl-auto: update
 #      show-sql: true
 
+#spring:
+#  datasource:
+#    url: ${db_url}
+#    username: ${db_username}
+#    password: ${db_password}
+#    driverClassName: org.postgresql.Driver
+#    jpa:
+#      properties:
+#        hibernate:
+#          dialect: org.hibernate.dialect.PostgreSQLDialect
+#      hibernate:
+#        ddl-auto: update
+#      show-sql: true
+
+
+
 spring:
   datasource:
-    url: ${db_url}
-    username: ${db_username}
-    password: ${db_password}
-    driverClassName: org.postgresql.Driver
-    jpa:
-      properties:
-        hibernate:
-          dialect: org.hibernate.dialect.PostgreSQLDialect
+        url: ${db_url}
+        username: ${db_username}
+        password: ${db_password}
+        driverClassName: org.postgresql.Driver
+  jpa:
+    properties:
       hibernate:
-        ddl-auto: update
-      show-sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
 
-
-
-
-
-
+##postgres://solidid_user:niu2wWCjA4jvHvAn8AYjcTfz5SHsWX5G@dpg-cp5imlocmk4c73f2rrlg-a.oregon-postgres.render.com/solidid

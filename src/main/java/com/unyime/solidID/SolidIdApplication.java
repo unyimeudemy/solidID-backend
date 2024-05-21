@@ -25,6 +25,7 @@ public class SolidIdApplication {
 						.addMapping("/**")
 						.allowedOrigins(
                                 "https://solidid-client.onrender.com",
+								"https://solidid-client-1.onrender.com",
 								"http://localhost:3000"
                         );
 			}
