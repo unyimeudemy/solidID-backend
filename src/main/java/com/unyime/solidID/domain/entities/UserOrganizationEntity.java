@@ -31,4 +31,8 @@ public class UserOrganizationEntity {
     private String staffEmail;
 
     private String staffRole;
+
+    private String profileImage;
+
+
 }

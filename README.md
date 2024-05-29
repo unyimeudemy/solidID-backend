@@ -39,3 +39,29 @@ deployed in aws Relation Database Service (RSD) and images are stored in aws Sim
 - All essential functionalities are unit tested and to run unit test use `./mvnw test`
 - To build project run `./mvnw verify clean`
 - The app is currently using the CI/CD service from render.com
+
+## WORK FLOW
+To use the software, Sign up a new user or sign in with the details below 
+- Email : unyime1@gmail.com
+- Password : 123456
+
+_OVERVIEW_
+When a user is logged in, the user can go to the profile section, select a profile and generate a token 
+which can be used for verification. Note that the profile chosen is the what will be displayed to a third party 
+that is using the token. Also note the token generated is a one-time token.
+
+On the profile page, logged-in users can also view their identity usage history. This history contains all
+time that the current user's account was verified and by whom. The page also has a button that opens up a
+form for adding a new organization.
+For a user to add an organization, the organization must be already registered with the platform and the user
+added as member. 
+
+To register an organization, click the signup button on the home page, and you will be redirected to the
+signup page for users. Then click the link at the bottom of the page to be redirected to the signup page
+organizations. For quick access as an organization, use the credentials below
+- Email : org2@gmail.com
+- Password : 123456
+
+On the organization's profile page, there is a button to get all the members of the organization and 
+another to add a new member.
+

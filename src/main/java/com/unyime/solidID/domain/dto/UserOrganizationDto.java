@@ -25,4 +25,6 @@ public class UserOrganizationDto {
     private String staffEmail;
 
     private String staffRole;
+
+    private String profileImage;
 }
