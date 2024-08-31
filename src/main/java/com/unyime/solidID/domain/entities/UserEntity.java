@@ -26,6 +26,7 @@ public class UserEntity implements UserDetails {
     @SequenceGenerator(name = "user_id_seq", sequenceName = "user_id_seq", allocationSize = 1)
     private Integer id;
 
+
     private String password;
 
     @Column(name = "email", unique = true)

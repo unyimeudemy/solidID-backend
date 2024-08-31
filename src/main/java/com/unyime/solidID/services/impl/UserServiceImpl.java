@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -77,6 +78,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public AuthenticationResponse signIn(UserEntity userEntity) {
         try {
+            var user = userRepository.findByEmail(userEntity.getEmail())
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             userEntity.getEmail(),
@@ -84,9 +87,7 @@ public class UserServiceImpl implements UserService {
                     )
             );
 
-            var user = userRepository.findByEmail(userEntity.getEmail()).orElseThrow();
             String jwtToken = jwtServiceimpl.generateToken(user);
-
             return AuthenticationResponse.builder()
                     .token(jwtToken)
                     .build();
