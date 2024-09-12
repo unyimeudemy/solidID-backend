@@ -90,7 +90,6 @@ public class OrganizationServiceImpl implements OrganizationService {
         return getOrg(orgEmail);
     }
 
-
     public   AuthenticationResponse checkReferenceAccount(String repEmail, String repPassword) {
         UserDto userDto = UserDto.builder()
                 .email(repEmail)
@@ -105,6 +104,4 @@ public class OrganizationServiceImpl implements OrganizationService {
         }
         return token.getBody();
     }
-
-
 }

@@ -12,6 +12,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class TokenGenerationReqBody {
 
-//    @Builder.Default
     private String orgEmail;
 }

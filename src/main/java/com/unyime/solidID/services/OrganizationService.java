@@ -18,5 +18,4 @@ public interface OrganizationService {
 
     Optional<OrganizationEntity> getOrgWithJwtToken(String accessToken);
 
-//    Optional<OrganizationEntity> getOrgByUserEmail(String currrentUserEmail, String orgEmail);
 }

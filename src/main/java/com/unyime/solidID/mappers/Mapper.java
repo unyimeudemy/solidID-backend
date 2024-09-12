@@ -1,8 +1,8 @@
 package com.unyime.solidID.mappers;
 
-public interface Mapper <A,B>{
+public interface Mapper <Entities, DTOs>{
 
-    B mapTo(A a);
+    DTOs mapTo(Entities entities);
 
-    A mapFrom(B b);
+    Entities mapFrom(DTOs DTOs);
 }

@@ -11,6 +11,4 @@ import java.util.Optional;
 public interface OrganizationRepository extends JpaRepository<OrganizationEntity, Integer> {
 
     Optional<OrganizationEntity> findByEmail(String email);
-
-
 }

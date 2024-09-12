@@ -33,6 +33,4 @@ public class UserOrganizationEntity {
     private String staffRole;
 
     private String profileImage;
-
-
 }

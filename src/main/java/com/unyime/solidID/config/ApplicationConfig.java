@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class ApplicationConfig {
@@ -28,8 +30,10 @@ public class ApplicationConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
+
     @Bean
     public AuthenticationProvider authenticationProvider(){
+        // userDetailsService fetches the user record from the database while
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService());
         authProvider.setPasswordEncoder(passwordEncoder());
@@ -45,5 +49,21 @@ public class ApplicationConfig {
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer(){
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings( CorsRegistry registry){
+                registry
+                        .addMapping("/**")
+                        .allowedOrigins(
+                                "https://solidid-client.onrender.com",
+                                "https://solidid-client-1.onrender.com",
+                                "http://localhost:3000"
+                        );
+            }
+        };
     }
 }

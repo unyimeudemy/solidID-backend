@@ -22,12 +22,8 @@ public class IdentityController {
 
     private final IdentityService identityService;
 
-//    private final Mapper<UserEntity, UserDto> userMapper;
-
-
     public IdentityController(IdentityService identityService, Mapper<UserEntity, UserDto> userMapper) {
         this.identityService = identityService;
-//        this.userMapper = userMapper;
     }
 
 
@@ -49,7 +45,6 @@ public class IdentityController {
     ){
         String currentUserEmail = authentication.getName();
         Optional<VerificationResponse> verifiedUser = identityService.verify(currentUserEmail, verificationDto.getKey());
-//        return new ResponseEntity<>(userMapper.mapTo(userEntity.get()), HttpStatus.FOUND);
 
         if(verifiedUser.isPresent()){
             return new ResponseEntity<>(verifiedUser.get(), HttpStatus.OK);

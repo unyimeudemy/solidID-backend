@@ -6,7 +6,6 @@ import com.unyime.solidID.domain.entities.UserEntity;
 import com.unyime.solidID.repository.StaffMemberRepository;
 import com.unyime.solidID.services.impl.JwtServiceImpl;
 import com.unyime.solidID.services.impl.StaffMemberServiceImpl;
-import com.unyime.solidID.utils.HandleJwtToken;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -70,7 +69,7 @@ public class StaffMemberServiceImplUnitTest {
                 .thenReturn(Optional.of(staffMemberEntity));
 
         Optional<StaffMemberEntity> result =
-                underTest.getMember(staffMemberEntity.getStaffEmail());
+                underTest.getMember(staffMemberEntity.getStaffEmail(), staffMemberEntity.getOrgEmail());
 
         assertThat(result).isPresent();
         assertThat(result).isEqualTo(Optional.of(staffMemberEntity));
@@ -85,7 +84,7 @@ public class StaffMemberServiceImplUnitTest {
                 .thenReturn(Optional.empty());
 
         Optional<StaffMemberEntity> result =
-                underTest.getMember(staffMemberEntity.getStaffEmail());
+                underTest.getMember(staffMemberEntity.getStaffEmail(), staffMemberEntity.getOrgEmail());
 
         assertThat(result).isEmpty();
     }
@@ -99,11 +98,12 @@ public class StaffMemberServiceImplUnitTest {
     public void testThatOrgCanListOfAllStaffMembers(){
         StaffMemberEntity staffMemberEntity = TestDataUtility.createTestStaffMemberEntity();
         List<StaffMemberEntity> response = List.of(staffMemberEntity);
+        String orgEmail = "";
 
         when(staffMemberRepository.findAll())
                 .thenReturn(List.of(staffMemberEntity));
 
-        List<StaffMemberEntity> result = underTest.getMembers();
+        List<StaffMemberEntity> result = underTest.getMembers(orgEmail);
 
         assertThat(result).isEqualTo(response);
     }
@@ -111,10 +111,11 @@ public class StaffMemberServiceImplUnitTest {
     @Test
     public void testThatEmptyListIsReturnedIfThereIsNoRegisteredStaffMember(){
 
+        String orgEmail = "";
         when(staffMemberRepository.findAll())
                 .thenReturn(Collections.emptyList());
 
-        List<StaffMemberEntity> result = underTest.getMembers();
+        List<StaffMemberEntity> result = underTest.getMembers(orgEmail);
 
         assertThat(result).isEmpty();
     }

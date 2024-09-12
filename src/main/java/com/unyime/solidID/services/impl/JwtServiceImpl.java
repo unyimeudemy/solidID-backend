@@ -18,7 +18,7 @@ import java.util.function.Function;
 @Component
 public class JwtServiceImpl {
 
-    private static final String SECRET_KEY = "2ccb38cf74fa599dc0ab09433ff697514da5cd1587f9d7cd6da558d473096fa";
+    private static final String SECRET_KEY =  System.getenv( "JWT_SECRET");
 
     public  String extractUsername(String token){
         return extractClaim(token, Claims::getSubject);
@@ -59,5 +59,4 @@ public class JwtServiceImpl {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
-
 }

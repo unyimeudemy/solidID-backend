@@ -13,25 +13,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class SolidIdApplication {
 
 	public static void main(String[] args) {
-		System.out.println("=============================" + System.getenv("db_url"));
 		SpringApplication.run(SolidIdApplication.class, args);
 	}
-
-	@Bean
-	public WebMvcConfigurer corsConfigurer(){
-		return new WebMvcConfigurer() {
-			@Override
-			public void addCorsMappings( CorsRegistry  registry){
-				registry
-						.addMapping("/**")
-						.allowedOrigins(
-                                "https://solidid-client.onrender.com",
-								"https://solidid-client-1.onrender.com",
-								"http://localhost:3000"
-                        );
-			}
-		};
-
-	}
-
 }

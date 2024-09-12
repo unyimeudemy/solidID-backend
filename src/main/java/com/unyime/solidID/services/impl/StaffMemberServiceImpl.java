@@ -33,14 +33,16 @@ public class StaffMemberServiceImpl implements StaffMemberService {
         return Optional.of(savedStaffMemberEntity);
     }
 
+    //Gets the member of a particular organization
     @Override
-    public Optional<StaffMemberEntity> getMember(String staffEmail) {
-        return staffMemberRepository.findByStaffEmail(staffEmail);
+    public Optional<StaffMemberEntity> getMember(String staffEmail, String orgEmail) {
+        return staffMemberRepository.findByStaffEmailAndOrgEmail(staffEmail, orgEmail);
     }
 
+    //gets all members in an organization
     @Override
-    public List<StaffMemberEntity> getMembers() {
-        return staffMemberRepository.findAll();
+    public List<StaffMemberEntity> getMembers(String orgEmail) {
+        return staffMemberRepository.findByOrgEmail(orgEmail);
     }
 
     private Boolean verifyToken(String reqHeader, String orgEmail){

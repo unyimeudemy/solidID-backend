@@ -21,6 +21,16 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
 
+
+/**
+ * Unit tests for the `IdentityServiceImpl` class, which is responsible for
+ * generating and verifying identity tokens for users and organizations.
+ *
+ * The methods in this class include:
+ * - Generating a new identity token which is done with the {@link IdentityServiceImpl#generate(String, String)}
+ * - Verifying an identity token and retrieving user or organization details which is done with  {@link IdentityServiceImpl#verify(String, String)}
+ * - A private method for record keeping whenever an identity is verified  keepRecordOfIdentityVerification(String, String)}
+ */
 @ExtendWith(MockitoExtension.class)
 public class IdentityServiceImplUnitTest {
 
@@ -40,10 +50,21 @@ public class IdentityServiceImplUnitTest {
     @InjectMocks
     private IdentityServiceImpl underTest;
 
+    /**
+     * Test that the {@link IdentityServiceImpl#generate(String, String)}
+     * method can generate a new identity token for a given user and organization.
+     *
+     * The generate method uses java.util.Random to generate numbers between 0 and 999,999.
+     * And the generated token is stored with {@link IdentityRepository#save(Object)}. After
+     * this, another trying to verify the identity will fetch and use token with
+     * {@link IdentityServiceImpl#verify(String, String)}
+     */
     @Test
     public void testThatIdentityTokenCanBeGenerated(){
         String keyStr = "123456";
         UserEntity userEntity = TestDataUtility.createTestUserEntity();
+
+        // Assuming the chosen profile is an organization not personal
         OrganizationEntity organizationEntity = TestDataUtility.createTestOrgEntity();
 
 
@@ -60,6 +81,20 @@ public class IdentityServiceImplUnitTest {
     }
 
 
+    /**
+     * This test that the {@link IdentityServiceImpl#verify(String, String)} method can verify an
+     * identity token and return the appropriate user details when a personal profile has been chosen.
+     *
+     * The verify method basically handles two types of profile options. First is the personal
+     * profile option which is called "profile" and the second is an email of an organization
+     * of which the user is a member.
+     *
+     * The "Profile" option returns the user's personal profile like state of origin and nationality,
+     * while the organization option returns the user's jpb role and otheer details in the specified
+     * organization.
+     *
+     * In this test method, it is assumed the user chose "profile".
+     */
     @Test
     public void testThatTokenCanBeVerifiedAndUserDetailsReturnedWhenProfileHasBeenChosen(){
         String key = "123456";
@@ -77,9 +112,11 @@ public class IdentityServiceImplUnitTest {
                 .nationality(verifiedUser.getNationality())
                 .build();
 
+        //check if key to be verified was generated
         when(identityRepository.findByKey(key))
                 .thenReturn(Optional.of(identityURLEntity));
 
+        //uses the email of the user that generated the token to get necessary detail
         when(userRepository.findByEmail(identityURLEntity.getEncodedEmail()))
                 .thenReturn(Optional.of(userEntity));
 
@@ -91,6 +128,12 @@ public class IdentityServiceImplUnitTest {
     }
 
 
+    /**
+     * This test continues from {@link #testThatTokenCanBeVerifiedAndUserDetailsReturnedWhenProfileHasBeenChosen()}
+     * to test that the {@link IdentityServiceImpl#verify(String, String)} method can verify an
+     * identity token and return the appropriate user employment details when an organization has
+     * been chosen.
+     */
     @Test
     public void testThatTokenCanBeVerifiedAndUserDetailsReturnedWhenOrgHasBeenChosen(){
         String key = "123456";
@@ -120,14 +163,18 @@ public class IdentityServiceImplUnitTest {
         assertThat(result.get()).isEqualTo(response);
     }
 
+
+    /**
+     * This test continues from {@link #testThatTokenCanBeVerifiedAndUserDetailsReturnedWhenOrgHasBeenChosen()}
+     * to test that the {@link IdentityServiceImpl#verify(String, String)} returns nothing when
+     * attempting to verify an invalid token.
+     */
     @Test
-    public void testThatNullIsReturnedIfThereIsNoKeyToVerify(){
+    public void testThatNullIsReturnedIfThereIsNoValidKeyToVerify(){
         String key = "123456";
         IdentityURLEntity identityURLEntity = TestDataUtility.createIdentityURLEntity();
         identityURLEntity.setOrgEmail("Profile or Org");
         UserEntity userEntity = TestDataUtility.createTestUserEntity();
-
-
         when(identityRepository.findByKey(key)).thenReturn(Optional.empty());
 
         Optional<VerificationResponse> result = underTest

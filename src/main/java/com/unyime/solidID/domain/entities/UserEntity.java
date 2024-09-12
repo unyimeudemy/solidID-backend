@@ -80,6 +80,3 @@ public class UserEntity implements UserDetails {
         return true;
     }
 }
-
-//4:50
-//5:02

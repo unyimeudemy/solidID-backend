@@ -1,15 +1,15 @@
 
 spring:
   datasource:
-        url: ${db_url}
-        username: ${db_username}
-        password: ${db_password}
+        url: jdbc:postgresql://dpg-crc3lb3v2p9s73dlticg-a.oregon-postgres.render.com:5432/solidid_b93u
+        username: solidid
+        password: Ta9UiZGfOBpmipavYH1uvHSmJcWpWwhw
         driverClassName: org.postgresql.Driver
   jpa:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     show-sql: true
 

@@ -70,6 +70,8 @@ public class IdentityServiceImpl implements IdentityService {
         if(identityURLEntity.isPresent()){
             String userEmail = identityURLEntity.get().getEncodedEmail();
             String orgEmail = identityURLEntity.get().getOrgEmail();
+
+            // if chosen profile is personal profile, then personal profile is returned
             if(!identityURLEntity.get().getOrgEmail().equals("Profile")){
                 Optional<UserOrganizationEntity> staffUser = userOrganizationRepository.
                         findByUserEmailAndOrgEmail(userEmail, orgEmail);
@@ -84,6 +86,7 @@ public class IdentityServiceImpl implements IdentityService {
                                     .build()
                     );
             }else{
+                // If profile chosen is that of organization, then related data is fetched.
                 Optional<UserEntity> verifiedUser = userRepository.findByEmail(userEmail);
                 keepRecordOfIdentityVerification(currentUserEmail, verifiedUser.get().getEmail());
                 return Optional.of(

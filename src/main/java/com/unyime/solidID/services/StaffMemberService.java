@@ -11,7 +11,7 @@ public interface StaffMemberService {
 
     Optional<StaffMemberEntity> addMember(String reqHeader, StaffMemberEntity staffMemberEntity);
 
-    Optional<StaffMemberEntity>  getMember(String staffEmail);
+    Optional<StaffMemberEntity>  getMember(String staffEmail, String orgEmail);
 
-    List<StaffMemberEntity> getMembers();
+    List<StaffMemberEntity> getMembers(String orgEmail);
 }

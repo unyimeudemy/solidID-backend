@@ -69,7 +69,8 @@ public class OrganizationController {
         String reqHeader = request.getHeader("Authorization");
         StaffMemberEntity staffMemberEntity = staffMemberMapper.mapFrom(staffMemberDto);
 
-        if(staffMemberService.getMember(staffMemberEntity.getStaffEmail()).isPresent()){
+        //check if provided user is already a member of the organization
+        if(staffMemberService.getMember(staffMemberEntity.getStaffEmail(), staffMemberEntity.getOrgEmail()).isPresent()){
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
         Optional<StaffMemberEntity> savedStaffMemberEntity =
@@ -83,8 +84,12 @@ public class OrganizationController {
     }
 
     @GetMapping(path = "/all-members")
-    public List<StaffMemberDto> getMembers(){
-        List<StaffMemberEntity> staffMemberList = staffMemberService.getMembers();
+    public List<StaffMemberDto> getMembers(
+            @NonNull HttpServletRequest request
+    ){
+        String token = request.getHeader("Authorization").replace("Bearer ", "").strip();
+        Optional<OrganizationEntity> currentOrg = organizationService.getOrgWithJwtToken(token);
+        List<StaffMemberEntity> staffMemberList = staffMemberService.getMembers(currentOrg.get().getEmail());
         return staffMemberList.stream().map(staffMemberMapper::mapTo).collect(Collectors.toList());
     }
 
